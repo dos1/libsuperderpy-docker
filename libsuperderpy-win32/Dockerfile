@@ -5,4 +5,4 @@ RUN apt-get update && apt-get -y install cmake ninja-build zip git && apt-get cl
 
 ADD i686-w64-mingw32 /usr/i686-w64-mingw32
 
-ENTRYPOINT ["/bin/sh", "-c"]
+ENTRYPOINT ["/bin/bash", "-c"]
