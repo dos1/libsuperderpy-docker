@@ -1,7 +1,7 @@
 FROM andrewd/osxcross:latest
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
-RUN apt-get update && apt-get -y install cmake ninja-build ruby zip git && apt-get clean
+RUN apt-get update && apt-get -y install cmake ninja-build ruby zip git wget && apt-get clean
 
 ENV MACOSX_DEPLOYMENT_TARGET 10.7
 ENV LIBSUPERDERPY_OSXCROSS_ROOT /opt/osxcross/target
