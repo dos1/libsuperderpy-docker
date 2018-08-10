@@ -1,7 +1,7 @@
 FROM jimbly/steamrt-amd64-gcc:latest
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
-RUN apt-get update && apt-get -y install cmake zip tar gzip git libdumb1-dev libphysfs-dev libenet-dev wget && apt-get clean
+RUN apt-get update && apt-get -y install cmake zip tar gzip git libdumb1-dev libphysfs-dev libenet-dev && apt-get clean
 
 ADD https://github.com/webmproject/libwebp/archive/v1.0.0.tar.gz /libwebp-1.0.0.tar.gz
 RUN cd / && tar xzf libwebp-1.0.0.tar.gz && cd /libwebp-1.0.0 && mkdir build && cd build && cmake .. && make -j2 && make install && cd / && rm -rf /libwebp-*
