@@ -32,7 +32,7 @@ set -e
 cd /home/admin
 unzip sdl2.zip
 cd SDL-mirror-maemo5
-mkdir build
+mkdir -p build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DEXTRA_CFLAGS="-mfpu=neon" -DVIDEO_X11_XINERAMA=OFF
 make -j3
@@ -52,9 +52,9 @@ set -e
 cd /home/admin
 unzip allegro5.zip
 cd allegro5-maemo5
-mkdir build
+mkdir -p build
 cd build
-cmake .. -DALLEGRO_SDL=yes -DWANT_DEMO=no -DWANT_EXAMPLES=no -DEXTRA_CFLAGS="-mfpu=neon"
+CFLAGS="-mfpu=neon" cmake .. -DALLEGRO_SDL=yes -DWANT_DEMO=no -DWANT_EXAMPLES=no
 make -j3
 make install
 cd ../..
