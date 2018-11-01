@@ -1,2 +1,0 @@
-- .deb packages for SDL2 and Allegro
-- fix libGLESv2 and libEGL symlinks to match what's on the device
