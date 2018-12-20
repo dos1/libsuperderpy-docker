@@ -1,4 +1,4 @@
-FROM debian:testing
+FROM debian:buster
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
 RUN apt-get update && apt-get -y install flatpak-builder && apt-get clean
