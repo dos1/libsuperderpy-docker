@@ -62,3 +62,6 @@ RUN mkdir /opt/android-ndk-tmp && \
 
 # add to PATH
 ENV PATH ${PATH}:${ANDROID_NDK_HOME}
+
+# warm up the gradle cache
+RUN mkdir /deps && cd /deps && wget https://github.com/dos1/allegro5/archive/dos.tar.gz && tar xzf dos.tar.gz && cd allegro5-dos && cmake -Bbuild -H. -DCMAKE_BUILD_TYPE=Release -GNinja -DANDROID_NDK=$ANDROID_NDK_HOME -DCMAKE_SYSTEM_NAME=Android -DANDROID=TRUE -DWANT_TESTS=no -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF && cmake --build build && rm -rf /deps
