@@ -1,0 +1,2 @@
+#!/bin/sh
+mkdir -p build && cd build && emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja -DCMAKE_INSTALL_PREFIX=/emsdk_portable/sdk/system -DCMAKE_PREFIX_PATH=/emsdk_portable/sdk/system $@ && ninja install
