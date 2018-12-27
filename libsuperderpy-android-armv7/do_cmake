@@ -1,0 +1,2 @@
+#!/bin/sh
+cmake -Bbuild -H. -DCMAKE_BUILD_TYPE=Release -GNinja -DCMAKE_TOOLCHAIN_FILE=$ANDROID_TOOLCHAIN/android.toolchain -DCMAKE_INSTALL_PREFIX=$ANDROID_TOOLCHAIN/sysroot/usr -DCMAKE_PREFIX_PATH=$ANDROID_TOOLCHAIN/sysroot $@ && cmake --build build --target install

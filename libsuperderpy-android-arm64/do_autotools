@@ -1,0 +1,2 @@
+#!/bin/sh
+CFLAGS=$ANDROID_CFLAGS LDFLAGS=$ANDROID_LDFLAGS ./configure --prefix=$ANDROID_TOOLCHAIN/sysroot/usr --host=aarch64-linux-android --disable-shared $@ && make -j3 install
