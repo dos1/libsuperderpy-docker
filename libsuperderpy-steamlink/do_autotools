@@ -1,0 +1,3 @@
+#!/bin/bash
+source $MARVELL_SDK_PATH/setenv.sh
+./configure $STEAMLINK_CONFIGURE_OPTS --disable-shared $@ && DESTDIR=$MARVELL_ROOTFS make -j3 install

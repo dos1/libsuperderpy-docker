@@ -1,0 +1,3 @@
+#!/bin/bash
+source $MARVELL_SDK_PATH/setenv.sh
+make install PREFIX=$MARVEL_SDK_PATH/rootfs/usr CC="$CC" AR="${CROSS}ar" RANLIB="${CROSS}ranlib" LDFLAGS="$LDFLAGS" $@
