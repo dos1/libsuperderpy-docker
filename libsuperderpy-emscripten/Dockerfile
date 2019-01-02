@@ -40,11 +40,14 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/har
 # and freetype again, now with harfbuzz support
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.9.1.tar.gz && tar xzf freetype-2.9.1.tar.gz && cd freetype-2.9.1 && do_cmake -DFT_WITH_ZLIB=ON -DFT_WITH_BZIP2=ON -DFT_WITH_PNG=ON -DFT_WITH_HARFBUZZ=ON && rm -rf /deps
 
-RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p1.tar.gz && tar xzf SDL2-2.0.9-p1.tar.gz && cd SDL2-2.0.9 && do_cmake && rm -rf /deps
+# audio doesn't work on upstream SDL2; let's use the one from emscripten-ports for now
+#RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p1.tar.gz && tar xzf SDL2-2.0.9-p1.tar.gz && cd SDL2-2.0.9 && do_cmake && rm -rf /deps
+RUN embuilder.py build sdl2
+ENV EMMAKEN_CFLAGS="-s USE_SDL=2"
 
 ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
 # for some reason, Allegro's cmake needs to be run twice with emscripten
 # TODO: try to get Allegro to output already linked .so files
-RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && (do_cmake -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes || true) && do_cmake -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes && rm -rf /deps
+RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && (do_cmake -DSDL2_INCLUDE_DIR=emscripten -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes || true) && do_cmake -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes && rm -rf /deps
 
-RUN cd $EMSCRIPTEN/system/lib && emcc liballegro_monolith-static.bc libpng.a libz.a libogg.a libvorbisfile.a libvorbis.a libopusfile.a libopus.a libSDL2.a libSDL2main.a libphysfs.a libtheoradec.a libFLAC.a libfreetype.a libharfbuzz.a libjpeg.a libwebp.a -o allegro5.so
+RUN cd $EMSCRIPTEN/system/lib && emcc liballegro_monolith-static.bc libpng.a libz.a libogg.a libvorbisfile.a libvorbis.a libopusfile.a libopus.a libphysfs.a libtheoradec.a libFLAC.a libfreetype.a libharfbuzz.a libjpeg.a libwebp.a -o allegro5.so
