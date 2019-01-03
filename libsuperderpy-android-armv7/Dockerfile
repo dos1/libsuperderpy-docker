@@ -35,12 +35,12 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/lib
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/physfs-3.0.1.tar.bz2 && tar xBf physfs-3.0.1.tar.bz2 && cd physfs-3.0.1 && do_cmake -DPHYSFS_BUILD_SHARED=off && rm -rf /deps
 
-RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.9.1.tar.gz && tar xzf freetype-2.9.1.tar.gz && cd freetype-2.9.1 && do_cmake -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=ON -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=ON -DCMAKE_DISABLE_FIND_PACKAGE_PNG=ON -DCMAKE_DISABLE_FIND_PACKAGE_BZip2=ON && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.9.1-p1.tar.gz && tar xzf freetype-2.9.1-p1.tar.gz && cd freetype-2.9.1 && do_cmake -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=ON -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=ON -DCMAKE_DISABLE_FIND_PACKAGE_PNG=ON -DCMAKE_DISABLE_FIND_PACKAGE_BZip2=ON && rm -rf /deps
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/harfbuzz-2.3.0.tar.bz2 && tar xBf harfbuzz-2.3.0.tar.bz2 && cd harfbuzz-2.3.0 && do_cmake -DHB_HAVE_FREETYPE=ON && rm -rf /deps
 
 # and freetype again, now with harfbuzz support
-RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.9.1.tar.gz && tar xzf freetype-2.9.1.tar.gz && cd freetype-2.9.1 && do_cmake -DFT_WITH_ZLIB=ON -DFT_WITH_BZIP2=ON -DFT_WITH_PNG=ON -DFT_WITH_HARFBUZZ=ON && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.9.1-p1.tar.gz && tar xzf freetype-2.9.1-p1.tar.gz && cd freetype-2.9.1 && do_cmake -DFT_WITH_ZLIB=ON -DFT_WITH_BZIP2=ON -DFT_WITH_PNG=ON -DFT_WITH_HARFBUZZ=ON && rm -rf /deps
 
 ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
 RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && do_cmake -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF -DFREETYPE_ZLIB=ON -DFREETYPE_PNG=ON -DFREETYPE_HARFBUZZ=ON -DFREETYPE_BZIP2=ON -DPREFER_STATIC_DEPS=ON -DTTF_COMPILES_WITH_EXTRA_DEPS=ON && rm -rf /deps
