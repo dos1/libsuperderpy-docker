@@ -1,0 +1,41 @@
+--- /usr/local/bin/emcc.py	2018-12-01 00:24:43.000000000 +0000
++++ emcc.py	2019-01-10 02:16:22.077258887 +0000
+@@ -969,7 +975,7 @@
+ 
+       # If not compiling to JS, then we are compiling to an intermediate bitcode objects or library, so
+       # ignore dynamic linking, since multiple dynamic linkings can interfere with each other
+-      if filename_type_suffix(target) not in JS_CONTAINING_SUFFIXES or options.ignore_dynamic_linking:
++      if (filename_type_suffix(target) not in JS_CONTAINING_SUFFIXES and 'SIDE_MODULE=1' not in settings_changes and 'SIDE_MODULE=2' not in settings_changes) or options.ignore_dynamic_linking:
+         def check(input_file):
+           if filename_type_ending(input_file) in DYNAMICLIB_ENDINGS:
+             if not options.ignore_dynamic_linking:
+@@ -1074,6 +1080,11 @@
+       elif shared.Settings.SIDE_MODULE:
+         assert not shared.Settings.MAIN_MODULE
+         options.memory_init_file = False # memory init file is not supported with asm.js side modules, must be executable synchronously (for dlopen)
++        # SIDE_MODULE+WASM combo unambiguously specifies what kind of file we want to output, so we don't have to fiddle with file extension
++        if shared.Settings.WASM:
++          wasm_binary_target = target
++        else:
++          js_target = target
+ 
+       if shared.Settings.MAIN_MODULE or shared.Settings.SIDE_MODULE:
+         assert shared.Settings.ASM_JS, 'module linking requires asm.js output (-s ASM_JS=1)'
+@@ -1576,7 +1587,7 @@
+               temp_files[pos] = (temp_files[pos][0], new_temp_file)
+ 
+       # Decide what we will link
+-      stop_at_bitcode = final_suffix not in EXECUTABLE_SUFFIXES
++      stop_at_bitcode = final_suffix not in EXECUTABLE_SUFFIXES and not shared.Settings.SIDE_MODULE
+ 
+       if stop_at_bitcode or not shared.Settings.WASM_BACKEND:
+         # Filter link flags, keeping only those that shared.Building.link knows
+@@ -1619,8 +1630,6 @@
+             # Sort arg tuples and pass the extracted values to link.
+             shared.Building.link(linker_inputs, specified_target)
+         logger.debug('stopping at bitcode')
+-        if shared.Settings.SIDE_MODULE:
+-          exit_with_error('SIDE_MODULE must only be used when compiling to an executable shared library, and not when emitting LLVM bitcode. That is, you should be emitting a .wasm file (for wasm) or a .js file (for asm.js). Note that when compiling to a typical native suffix for a shared library (.so, .dylib, .dll; which many build systems do) then Emscripten emits an LLVM bitcode file, which you should then compile to .wasm or .js with SIDE_MODULE.')
+         if final_suffix.lower() in ['so', 'dylib', 'dll']:
+           logger.warning('When Emscripten compiles to a typical native suffix for shared libraries (.so, .dylib, .dll) then it emits an LLVM bitcode file. You should then compile that to an emscripten SIDE_MODULE (using that flag) with suffix .wasm (for wasm) or .js (for asm.js). (You may also want to adapt your build system to emit the more standard suffix for a file with LLVM bitcode, \'.bc\', which would avoid this warning.)')
+         return 0

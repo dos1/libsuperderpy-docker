@@ -1,4 +1,4 @@
-FROM trzeci/emscripten
+FROM trzeci/emscripten:sdk-tag-1.38.21-64bit
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
 RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config git zip
@@ -50,3 +50,6 @@ ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
 RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && (do_cmake -DSDL2_INCLUDE_DIR=emscripten -DWANT_ALLOW_SSE=OFF -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes || true) && do_cmake -DSDL2_INCLUDE_DIR=emscripten -DWANT_ALLOW_SSE=OFF -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_DEMO=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes && rm -rf /deps
 
 RUN cd $EMSCRIPTEN/system/lib && emcc liballegro_monolith-static.bc libpng.a libz.a libogg.a libvorbisfile.a libvorbis.a libopusfile.a libopus.a libphysfs.a libtheoradec.a libFLAC.a libfreetype.a libharfbuzz.a libjpeg.a libwebp.a -o allegro5.so
+
+ADD 0001-Don-t-force-the-file-extension-to-.js-or-.wasm-when-.patch /deps/
+RUN patch -p1 /emsdk_portable/sdk/emcc.py < /deps/0001-Don-t-force-the-file-extension-to-.js-or-.wasm-when-.patch && rm -rf /deps
