@@ -41,15 +41,14 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/fre
 
 # audio doesn't work on upstream SDL2; let's use the one from emscripten-ports for now
 #RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p1.tar.gz && tar xzf SDL2-2.0.9-p1.tar.gz && cd SDL2-2.0.9 && do_cmake && rm -rf /deps
-RUN embuilder.py build sdl2
-ENV EMMAKEN_CFLAGS="-s USE_SDL=2"
+RUN mkdir /deps && cd /deps && wget https://github.com/emscripten-ports/SDL2/archive/8630810.tar.gz && tar xzf 8630810.tar.gz && cd SDL2-86308101a27a51272a2f57de46c6afa7013f3a74 && do_cmake && rm -rf /deps
 
 ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
 # for some reason, Allegro's cmake needs to be run twice with emscripten
 # TODO: try to get Allegro to output already linked .so files
-RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && (do_cmake -DSDL2_INCLUDE_DIR=emscripten -DWANT_ALLOW_SSE=OFF -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes || true) && do_cmake -DSDL2_INCLUDE_DIR=emscripten -DWANT_ALLOW_SSE=OFF -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_DEMO=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes && rm -rf /deps
+RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && (do_cmake -DWANT_ALLOW_SSE=OFF -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes || true) && do_cmake -DWANT_ALLOW_SSE=OFF -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_DEMO=no -DWANT_MONOLITH=yes -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes && rm -rf /deps
 
-RUN cd $EMSCRIPTEN/system/lib && emcc liballegro_monolith-static.bc libpng.a libz.a libogg.a libvorbisfile.a libvorbis.a libopusfile.a libopus.a libphysfs.a libtheoradec.a libFLAC.a libfreetype.a libharfbuzz.a libjpeg.a libwebp.a -o allegro5.so
+RUN cd $EMSCRIPTEN/system/lib && emcc liballegro_monolith-static.bc libSDL2main.a libSDL2.a libvorbisfile.a libvorbis.a libopusfile.a libopus.a libphysfs.a libtheoradec.a libFLAC.a libogg.a libdumb.a libfreetype.a libharfbuzz.a libfreetype.a libjpeg.a libwebp.a libpng.a libz.a libbz2.a -o allegro5.so
 
 ADD 0001-Don-t-force-the-file-extension-to-.js-or-.wasm-when-.patch /deps/
 RUN patch -p1 /emsdk_portable/sdk/emcc.py < /deps/0001-Don-t-force-the-file-extension-to-.js-or-.wasm-when-.patch && rm -rf /deps
