@@ -1,7 +1,7 @@
 FROM trzeci/emscripten:sdk-tag-1.38.21-64bit
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
-RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config git zip
+RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config git zip opus-tools imagemagick
 
 ADD do_autotools do_cmake do_make /usr/bin/
 ENV PKG_CONFIG_PATH=/emsdk_portable/sdk/system/lib/pkgconfig
