@@ -20,7 +20,10 @@ RUN apt-get update && \
         wget                \
         ninja-build         \
         ruby                \
-        zip
+        zip                 \
+        vorbis-tools        \
+        opus-tools          \
+        imagemagick
 
 # Install osxcross
 # NOTE: The Docker Hub's build machines run varying types of CPUs, so an image

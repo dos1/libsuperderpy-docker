@@ -5,7 +5,7 @@ ENV ANDROID_HOME /opt/android-sdk-linux
 # ------------------------------------------------------
 # --- Install required tools
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk-headless cmake zip ninja-build zip wget python pkg-config git opus-tools imagemagick && apt-get clean
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk-headless cmake zip ninja-build zip wget python pkg-config git vorbis-tools opus-tools imagemagick && apt-get clean
 
 # ------------------------------------------------------
 # --- Download Android SDK tools into $ANDROID_HOME
