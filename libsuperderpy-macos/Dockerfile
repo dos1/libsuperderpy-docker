@@ -23,7 +23,8 @@ RUN apt-get update && \
         zip                 \
         vorbis-tools        \
         opus-tools          \
-        imagemagick
+        imagemagick         \
+        webp
 
 # Install osxcross
 # NOTE: The Docker Hub's build machines run varying types of CPUs, so an image

@@ -1,7 +1,7 @@
 FROM debian:stretch
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
-RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config cmake zip git wget python2.7 vorbis-tools opus-tools imagemagick && ln -s /usr/bin/python2.7 /usr/bin/python2
+RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config cmake zip git wget python2.7 vorbis-tools opus-tools imagemagick webp && ln -s /usr/bin/python2.7 /usr/bin/python2
 
 ENV MARVELL_SDK_PATH=/steamlink-sdk PKG_CONFIG_PATH=$MARVELL_SDK_PATH/rootfs/usr/lib/pkgconfig
 
