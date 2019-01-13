@@ -1,4 +1,4 @@
-FROM trzeci/emscripten:sdk-tag-1.38.21-64bit
+FROM trzeci/emscripten:sdk-tag-1.38.22-64bit
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
 RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config git zip vorbis-tools opus-tools imagemagick webp
@@ -41,7 +41,7 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/fre
 
 # audio doesn't work on upstream SDL2; let's use the one from emscripten-ports for now
 #RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p1.tar.gz && tar xzf SDL2-2.0.9-p1.tar.gz && cd SDL2-2.0.9 && do_cmake && rm -rf /deps
-RUN mkdir /deps && cd /deps && wget https://github.com/emscripten-ports/SDL2/archive/8630810.tar.gz && tar xzf 8630810.tar.gz && cd SDL2-86308101a27a51272a2f57de46c6afa7013f3a74 && do_cmake && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://github.com/dos1/SDL2/archive/c12717287.tar.gz && tar xzf c12717287.tar.gz && cd SDL2-c12717287c0d3e07755a1f5fd90701d2bfec504c && do_cmake && rm -rf /deps
 
 ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
 # for some reason, Allegro's cmake needs to be run twice with emscripten
