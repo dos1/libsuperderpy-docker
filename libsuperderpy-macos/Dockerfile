@@ -23,7 +23,7 @@ RUN apt-get update && \
         zip                 \
         vorbis-tools        \
         opus-tools          \
-        imagemagick         \
+        graphicsmagick-imagemagick-compat   \
         webp
 
 # Install osxcross

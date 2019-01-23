@@ -1,7 +1,7 @@
 FROM trzeci/emscripten:sdk-tag-1.38.22-64bit
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
-RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config git zip vorbis-tools opus-tools imagemagick webp
+RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config git zip vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp
 
 ADD do_autotools do_cmake do_make /usr/bin/
 ENV PKG_CONFIG_PATH=/emsdk_portable/sdk/system/lib/pkgconfig

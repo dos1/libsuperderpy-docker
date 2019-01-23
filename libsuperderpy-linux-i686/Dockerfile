@@ -1,7 +1,7 @@
 FROM dosowisko/steam-runtime-i386:latest
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
-RUN apt-get update && apt-get -y install zip tar gzip git libdumb1-dev libphysfs-dev libenet-dev ninja-build libopusfile-dev libopus-dev vorbis-tools imagemagick webp && apt-get clean
+RUN apt-get update && apt-get -y install zip tar gzip git libdumb1-dev libphysfs-dev libenet-dev ninja-build libopusfile-dev libopus-dev vorbis-tools graphicsmagick-imagemagick-compat webp && apt-get clean
 
 ADD https://github.com/Kitware/CMake/releases/download/v3.13.2/cmake-3.13.2.tar.gz /cmake-3.13.2.tar.gz
 RUN cd / && tar xzf cmake-3.13.2.tar.gz && cd /cmake-3.13.2 && ./configure && make -j3 && make install && cd / && rm -rf /cmake-3.13.2
