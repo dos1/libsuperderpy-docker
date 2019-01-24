@@ -41,7 +41,7 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/fre
 
 # audio doesn't work on upstream SDL2; let's use the one from emscripten-ports for now
 #RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p1.tar.gz && tar xzf SDL2-2.0.9-p1.tar.gz && cd SDL2-2.0.9 && do_cmake && rm -rf /deps
-RUN mkdir /deps && cd /deps && wget https://github.com/dos1/SDL2/archive/c12717287.tar.gz && tar xzf c12717287.tar.gz && cd SDL2-c12717287c0d3e07755a1f5fd90701d2bfec504c && do_cmake && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://github.com/dos1/SDL2/archive/a8a4fde.tar.gz && tar xzf a8a4fde.tar.gz && cd SDL2-a8a4fdee312efffb6bea85e0a5aa913e49bf0810 && do_cmake && rm -rf /deps
 
 ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
 # for some reason, Allegro's cmake needs to be run twice with emscripten

@@ -7,7 +7,7 @@ RUN $ANDROID_NDK_HOME/build/tools/make_standalone_toolchain.py --arch arm64 --ap
 ADD android.toolchain $ANDROID_TOOLCHAIN/
 ADD do_autotools do_cmake do_make /usr/bin/
 
-ENV PATH=${PATH}:${ANDROID_TOOLCHAIN}/bin AR=aarch64-linux-android-ar AS=aarch64-linux-android-clang CC=aarch64-linux-android-clang CXX=aarch64-linux-android-clang++ LD=aarch64-linux-android-ld STRIP=aarch64-linux-android-strip RANLIB=aarch64-linux-android-ranlib ANDROID_CFLAGS="-fPIE -fPIC" ANDROID_LDFLAGS="-pie" PKG_CONFIG_PATH=$ANDROID_TOOLCHAIN/sysroot/usr/lib/pkgconfig
+ENV PATH=${PATH}:${ANDROID_TOOLCHAIN}/bin AR=aarch64-linux-android-ar AS=aarch64-linux-android-clang CC=aarch64-linux-android-clang CXX=aarch64-linux-android-clang++ LD=aarch64-linux-android-ld STRIP=aarch64-linux-android-strip RANLIB=aarch64-linux-android-ranlib ANDROID_CFLAGS="-fPIE -fPIC" ANDROID_CXXFLAGS="-fPIE -fPIC" PKG_CONFIG_PATH=$ANDROID_TOOLCHAIN/sysroot/usr/lib/pkgconfig
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/zlib-1.2.11.tar.gz && tar xzf zlib-1.2.11.tar.gz && cd zlib-1.2.11 && do_cmake && rm -rf /deps
 
@@ -43,4 +43,6 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/har
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.9.1-p1.tar.gz && tar xzf freetype-2.9.1-p1.tar.gz && cd freetype-2.9.1 && do_cmake -DFT_WITH_ZLIB=ON -DFT_WITH_BZIP2=ON -DFT_WITH_PNG=ON -DFT_WITH_HARFBUZZ=ON && rm -rf /deps
 
 ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
-RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && do_cmake -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF -DFREETYPE_ZLIB=ON -DFREETYPE_PNG=ON -DFREETYPE_HARFBUZZ=ON -DFREETYPE_BZIP2=ON -DPREFER_STATIC_DEPS=ON -DTTF_COMPILES_WITH_EXTRA_DEPS=ON && rm -rf /deps
+RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && do_cmake -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF -DFREETYPE_ZLIB=ON -DFREETYPE_PNG=ON -DFREETYPE_HARFBUZZ=ON -DFREETYPE_BZIP2=ON -DPREFER_STATIC_DEPS=ON -DTTF_COMPILES_WITH_EXTRA_DEPS=ON && mkdir -p /opt/allegro5/lib && cp -r /deps/allegro5-dos/build/lib/*.aar /opt/allegro5/lib/ && rm -rf /deps
+
+ENV ANDROID_ALLEGRO_ROOT /opt/allegro5

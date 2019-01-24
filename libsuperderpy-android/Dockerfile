@@ -17,6 +17,12 @@ RUN cd /opt \
 
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
 
+ENV LIBSUPERDERPY_ANDROID_TARGET android-26
+ENV ANDROID_NDK_HOME /opt/android-ndk
+ENV ANDROID_NDK_VERSION r14b
+ENV ANDROID_BUILD_TOOLS_VERSION 28.0.2
+ENV ANDROID_BUILD_TOOLS ${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS_VERSION}
+
 # ------------------------------------------------------
 # --- Install Android SDKs and other build packages
 
@@ -39,11 +45,8 @@ RUN sdkmanager "tools" "platform-tools"
 
 # Please keep all sections in descending order!
 RUN yes | sdkmanager \
-    "platforms;android-26" \
-    "build-tools;26.0.2"
-
-ENV ANDROID_NDK_HOME /opt/android-ndk
-ENV ANDROID_NDK_VERSION r14b
+    "platforms;${LIBSUPERDERPY_ANDROID_TARGET}" \
+    "build-tools;${ANDROID_BUILD_TOOLS_VERSION}"
 
 # ------------------------------------------------------
 # --- Android NDK

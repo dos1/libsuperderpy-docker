@@ -11,3 +11,5 @@ RUN cd / && tar xzf libwebp-1.0.1.tar.gz && cd /libwebp-1.0.1 && mkdir build && 
 
 ADD https://github.com/liballeg/allegro5/releases/download/5.2.4.0/allegro-5.2.4.0.tar.gz /allegro-5.2.4.0.tar.gz
 RUN cd / && tar xzf allegro-5.2.4.0.tar.gz && cd /allegro-5.2.4.0 && mkdir build && cd build && cmake -G Ninja .. -DWANT_DEMO=no -DWANT_EXAMPLES=no && ninja && ninja install && cd / && rm -rf /allegro-*
+
+ENV NO_STEAM_RUNTIME 1
