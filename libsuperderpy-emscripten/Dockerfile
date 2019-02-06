@@ -1,4 +1,4 @@
-FROM trzeci/emscripten:sdk-tag-1.38.22-64bit
+FROM trzeci/emscripten:sdk-tag-1.38.26-64bit
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
 RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config git zip vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp
@@ -28,7 +28,7 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/opu
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/opusfile-0.11.tar.gz && tar xzf opusfile-0.11.tar.gz && cd opusfile-0.11 && do_autotools --disable-http && rm -rf /deps
 
-RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/libwebp-1.0.1.tar.gz && tar xzf libwebp-1.0.1.tar.gz && cd libwebp-1.0.1 && do_cmake -DWEBP_BUILD_WEBP_JS=ON && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/libwebp-1.0.1.tar.gz && tar xzf libwebp-1.0.1.tar.gz && cd libwebp-1.0.1 && do_cmake -DWEBP_ENABLE_SIMD=OFF && rm -rf /deps
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/physfs-3.0.1.tar.bz2 && tar xBf physfs-3.0.1.tar.bz2 && cd physfs-3.0.1 && do_cmake && rm -rf /deps
 
@@ -41,12 +41,11 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/fre
 
 # audio doesn't work on upstream SDL2; let's use the one from emscripten-ports for now
 #RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p1.tar.gz && tar xzf SDL2-2.0.9-p1.tar.gz && cd SDL2-2.0.9 && do_cmake && rm -rf /deps
-RUN mkdir /deps && cd /deps && wget https://github.com/dos1/SDL2/archive/a8a4fde.tar.gz && tar xzf a8a4fde.tar.gz && cd SDL2-a8a4fdee312efffb6bea85e0a5aa913e49bf0810 && do_cmake && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://github.com/dos1/SDL2/archive/aaa1793.tar.gz && tar xzf aaa1793.tar.gz && cd SDL2-aaa1793534f152237d8d4a7b6806529042046d94 && do_cmake && rm -rf /deps
 
 ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
-# for some reason, Allegro's cmake needs to be run twice with emscripten
 # TODO: try to get Allegro to output already linked .so files
-RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && (do_cmake -DWANT_ALLOW_SSE=OFF -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_DEMO=no -DWANT_TESTS=no -DWANT_MONOLITH=yes -DWANT_OPENAL=no -DSHARED=no -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes || true) && do_cmake -DWANT_ALLOW_SSE=OFF -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_DEMO=no -DWANT_TESTS=no -DWANT_MONOLITH=yes -DWANT_OPENAL=no -DSHARED=no -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes && rm -rf /deps
+RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && do_cmake -DWANT_ALLOW_SSE=OFF -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_DEMO=no -DWANT_TESTS=no -DWANT_MONOLITH=yes -DWANT_OPENAL=no -DSHARED=no -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes && rm -rf /deps
 
 RUN cd $EMSCRIPTEN/system/lib && emcc liballegro_monolith-static.bc libSDL2main.a libSDL2.a libvorbisfile.a libvorbis.a libopusfile.a libopus.a libphysfs.a libtheoradec.a libFLAC.a libogg.a libdumb.a libfreetype.a libharfbuzz.a libfreetype.a libjpeg.a libwebp.a libpng.a libz.a libbz2.a -o allegro5.so
 
