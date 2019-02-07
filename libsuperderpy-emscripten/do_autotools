@@ -1,2 +1,2 @@
 #!/bin/sh
-emconfigure ./configure --prefix=/emsdk_portable/sdk/system --disable-shared $@ && emmake make -j3 install
+emconfigure ./configure --prefix=/emsdk_portable/sdk/system $@ && emmake make -j3 install
