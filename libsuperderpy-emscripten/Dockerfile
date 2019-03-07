@@ -1,4 +1,4 @@
-FROM trzeci/emscripten:sdk-tag-1.38.26-64bit
+FROM trzeci/emscripten:sdk-tag-1.38.28-64bit
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
 RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build file pkg-config git zip vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp
@@ -41,7 +41,7 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/fre
 
 # audio doesn't work on upstream SDL2; let's use the one from emscripten-ports for now
 #RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p1.tar.gz && tar xzf SDL2-2.0.9-p1.tar.gz && cd SDL2-2.0.9 && do_cmake && rm -rf /deps
-RUN mkdir /deps && cd /deps && wget https://github.com/dos1/SDL2/archive/aaa1793.tar.gz && tar xzf aaa1793.tar.gz && cd SDL2-aaa1793534f152237d8d4a7b6806529042046d94 && do_cmake && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://github.com/dos1/SDL2/archive/9bc10b7c9e6edc975486293c4dc7431af7868791.tar.gz && tar xzf 9bc10b7c9e6edc975486293c4dc7431af7868791.tar.gz && cd SDL2-9bc10b7c9e6edc975486293c4dc7431af7868791 && do_cmake && rm -rf /deps
 
 #ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
 # TODO: try to get Allegro to output already linked .so files

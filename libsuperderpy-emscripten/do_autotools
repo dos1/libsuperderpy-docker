@@ -1,2 +1,3 @@
 #!/bin/sh
+export EMCC_CFLAGS="-O3"
 emconfigure ./configure --prefix=/emsdk_portable/sdk/system $@ && emmake make -j3 install
