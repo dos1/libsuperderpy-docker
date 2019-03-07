@@ -5,7 +5,7 @@ sudo /scratchbox/sbin/sbox_ctl start
 sb-conf select FREMANTLE_ARMEL
 sudo /scratchbox/sbin/sbox_sync
 
-wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p1.tar.gz -O /scratchbox/users/admin/home/admin/sdl2.tar.gz
+wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p2.tar.gz -O /scratchbox/users/admin/home/admin/sdl2.tar.gz
 
 tee /scratchbox/users/admin/home/admin/build-sdl2.sh <<EOF
 #!/bin/sh

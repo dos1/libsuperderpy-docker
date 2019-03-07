@@ -43,9 +43,9 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/fre
 #RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p1.tar.gz && tar xzf SDL2-2.0.9-p1.tar.gz && cd SDL2-2.0.9 && do_cmake && rm -rf /deps
 RUN mkdir /deps && cd /deps && wget https://github.com/dos1/SDL2/archive/aaa1793.tar.gz && tar xzf aaa1793.tar.gz && cd SDL2-aaa1793534f152237d8d4a7b6806529042046d94 && do_cmake && rm -rf /deps
 
-ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
+#ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
 # TODO: try to get Allegro to output already linked .so files
-RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && do_cmake -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_DEMO=no -DWANT_TESTS=no -DWANT_MONOLITH=yes -DWANT_OPENAL=no -DSHARED=no -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.5.0-p1.tar.gz && tar xzf allegro-5.2.5.0-p1.tar.gz && cd allegro-5.2.5.0 && do_cmake -DALLEGRO_SDL=yes -DVORBIS_COMPILES=yes -DTTF_COMPILES=yes -DWANT_EXAMPLES=no -DWANT_DEMO=no -DWANT_TESTS=no -DWANT_MONOLITH=yes -DWANT_OPENAL=no -DSHARED=no -DEMSCRIPTEN_GENERATE_BITCODE_STATIC_LIBRARIES=yes && rm -rf /deps
 
 RUN cd $EMSCRIPTEN/system/lib && emcc liballegro_monolith-static.bc libSDL2main.a libSDL2.a libvorbisfile.a libvorbis.a libopusfile.a libopus.a libphysfs.a libtheoradec.a libFLAC.a libogg.a libdumb.a libfreetype.a libharfbuzz.a libfreetype.a libjpeg.a libwebp.a libpng.a libz.a libbz2.a -o allegro5.so
 

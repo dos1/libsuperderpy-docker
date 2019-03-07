@@ -44,5 +44,5 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/fre
 
 # Steam Link platform uses SDL2 from SDK
 
-ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
-RUN cd /deps && tar xzf dos.tar.gz && cd allegro5-dos && do_cmake -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF -DFREETYPE_ZLIB=ON -DFREETYPE_PNG=ON -DFREETYPE_HARFBUZZ=ON -DFREETYPE_BZIP2=ON -DPREFER_STATIC_DEPS=ON -DTTF_COMPILES_WITH_EXTRA_DEPS=ON -DALLEGRO_SDL=ON && rm -rf /deps
+#ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.5.0-p1.tar.gz && tar xzf allegro-5.2.5.0-p1.tar.gz && cd allegro-5.2.5.0 && do_cmake -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF -DFREETYPE_ZLIB=ON -DFREETYPE_PNG=ON -DFREETYPE_HARFBUZZ=ON -DFREETYPE_BZIP2=ON -DPREFER_STATIC_DEPS=ON -DTTF_COMPILES_WITH_EXTRA_DEPS=ON -DALLEGRO_SDL=ON && rm -rf /deps
