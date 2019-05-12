@@ -5,7 +5,7 @@ sudo /scratchbox/sbin/sbox_ctl start
 sb-conf select FREMANTLE_ARMEL
 sudo /scratchbox/sbin/sbox_sync
 
-wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.5.0-p1.tar.gz -O /scratchbox/users/admin/home/admin/allegro5.tar.gz
+wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.5.0-p2.tar.gz -O /scratchbox/users/admin/home/admin/allegro5.tar.gz
 
 tee /scratchbox/users/admin/home/admin/build-allegro5.sh << EOF
 #/bin/sh
