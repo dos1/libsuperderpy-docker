@@ -24,4 +24,4 @@ EOF
 
 chmod +x /scratchbox/users/admin/home/admin/build-allegro5.sh
 /scratchbox/login /home/admin/build-allegro5.sh
-sudo rm -rf /home/admin/build-allegro5.sh
+sudo rm -f /home/admin/build-allegro5.sh

@@ -25,5 +25,5 @@ EOF
 
 chmod +x /scratchbox/users/admin/home/admin/build-sdl2.sh
 /scratchbox/login /home/admin/build-sdl2.sh
-sudo rm -rf /home/admin/build-sdl2.sh
+sudo rm -f /home/admin/build-sdl2.sh
 sudo rm -rf /scratchbox/users/admin/home/admin/SDL2-patches

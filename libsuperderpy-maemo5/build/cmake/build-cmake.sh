@@ -20,4 +20,4 @@ EOF
 
 chmod +x /scratchbox/users/admin/home/admin/build-cmake.sh
 /scratchbox/login /home/admin/build-cmake.sh
-rm /home/admin/build-cmake.sh
+sudo rm -f /home/admin/build-cmake.sh
