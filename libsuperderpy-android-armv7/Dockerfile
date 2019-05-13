@@ -42,7 +42,6 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/har
 # and freetype again, now with harfbuzz support
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.9.1-p1.tar.gz && tar xzf freetype-2.9.1-p1.tar.gz && cd freetype-2.9.1 && do_cmake -DFT_WITH_ZLIB=ON -DFT_WITH_BZIP2=ON -DFT_WITH_PNG=ON -DFT_WITH_HARFBUZZ=ON && rm -rf /deps
 
-ADD https://github.com/dos1/allegro5/archive/dos.tar.gz /deps/
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.5.0-p2.tar.gz && tar xzf allegro-5.2.5.0-p2.tar.gz && cd allegro-5.2.5.0 && do_cmake -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF -DFREETYPE_ZLIB=ON -DFREETYPE_PNG=ON -DFREETYPE_HARFBUZZ=ON -DFREETYPE_BZIP2=ON -DPREFER_STATIC_DEPS=ON -DTTF_COMPILES_WITH_EXTRA_DEPS=ON && mkdir -p /opt/allegro5/lib && cp -r /deps/allegro-5.2.5.0/build/lib/*.aar /opt/allegro5/lib/ && rm -rf /deps
 
 #ADD https://github.com/dos1/allegro5/archive/dos-work.tar.gz /deps/
