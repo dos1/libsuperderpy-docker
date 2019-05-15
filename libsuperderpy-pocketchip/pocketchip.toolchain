@@ -1,0 +1,20 @@
+SET(CMAKE_SYSTEM_NAME Linux)
+
+# Specify the cross compiler
+SET(CMAKE_C_COMPILER $ENV{LINARO_TOOLCHAIN}/bin/arm-linux-gnueabihf-gcc)
+SET(CMAKE_CXX_COMPILER $ENV{LINARO_TOOLCHAIN}/bin/arm-linux-gnueabihf-g++)
+
+# Where is the target environment
+SET(CMAKE_SYSROOT $ENV{SYSROOT})
+
+# Search for programs only in the build host directories
+SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+
+# Search for libraries and headers only in the target directories
+SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+UNSET(CMAKE_EXE_LINKER_FLAGS CACHE)
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath-link=/sysroot/usr/local/lib -Wl,-rpath-link=/sysroot/usr/lib/arm-linux-gnueabihf -Wl,-rpath-link=/sysroot/lib/arm-linux-gnueabihf" CACHE STRING "" FORCE)
+
+SET(POCKETCHIP ON)

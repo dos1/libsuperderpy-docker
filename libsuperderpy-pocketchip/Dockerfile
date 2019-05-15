@@ -1,4 +1,4 @@
-FROM arm32v7/debian:jessie
+FROM arm32v7/debian:jessie AS sysroot
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
 RUN apt-get update && apt-get -y dist-upgrade && apt-get -y install git build-essential fakeroot devscripts git pkg-config dpkg-dev dh-make libdrm2 libgbm1 libxfixes3 libxext6 libxdamage1 libx11-6 libgcc1 libstdc++6 libudev1 libwayland-client0 libwayland-server0 ninja-build pkg-config cmake zip wget file vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp libpulse-dev libx11-dev libasound-dev libxss-dev libxrandr-dev libxinerama-dev libxcursor-dev libasound2-dev libudev-dev libsamplerate-dev libxi-dev
@@ -47,3 +47,12 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/fre
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL2-2.0.9-p2.tar.gz && tar xzf SDL2-2.0.9-p2.tar.gz && cd SDL2-2.0.9 && do_cmake && rm -rf /deps
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.5.0-p2.tar.gz && tar xzf allegro-5.2.5.0-p2.tar.gz && cd allegro-5.2.5.0 && do_cmake -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF -DALLEGRO_SDL=ON && rm -rf /deps
+
+FROM debian:stretch
+COPY --from=sysroot / /sysroot
+RUN apt-get update && apt-get install -y wget git pkg-config ninja-build cmake zip file vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp xz-utils
+RUN mkdir /toolchain && cd /toolchain && wget https://releases.linaro.org/components/toolchain/binaries/4.9-2016.02/arm-linux-gnueabihf/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabihf.tar.xz && tar xf gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabihf.tar.xz && rm gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabihf.tar.xz
+ADD pocketchip.toolchain /toolchain
+RUN ln -s /sysroot/lib/arm-linux-gnueabihf /lib/arm-linux-gnueabihf
+
+ENV LINARO_TOOLCHAIN=/toolchain/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabihf SYSROOT=/sysroot
