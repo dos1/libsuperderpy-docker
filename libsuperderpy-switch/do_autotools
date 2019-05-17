@@ -1,0 +1,3 @@
+#!/bin/bash
+source /opt/devkitpro/switchvars.sh
+./configure $@ && make -j3 install

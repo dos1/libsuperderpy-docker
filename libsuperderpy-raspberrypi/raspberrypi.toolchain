@@ -14,6 +14,6 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-SET(CMAKE_EXE_LINKER_FLAGS_INIT "${CMAKE_EXE_LINKER_FLAGS_INIT} -Wl,-rpath-link=${CMAKE_SYSROOT}/usr/local/lib -Wl,-rpath-link=${CMAKE_SYSROOT}/usr/lib/arm-linux-gnueabihf -Wl,-rpath-link=${CMAKE_SYSROOT}/lib/arm-linux-gnueabihf")
+SET(CMAKE_EXE_LINKER_FLAGS_INIT "${CMAKE_EXE_LINKER_FLAGS_INIT} -Wl,-rpath-link=${CMAKE_SYSROOT}/usr/local/lib -Wl,-rpath-link=${CMAKE_SYSROOT}/usr/lib/arm-linux-gnueabihf -Wl,-rpath-link=${CMAKE_SYSROOT}/lib/arm-linux-gnueabihf -Wl,-rpath-link=${CMAKE_SYSROOT}/opt/vc/lib" CACHE STRING "" FORCE)
 
-SET(POCKETCHIP ON)
+SET(RASPBERRYPI ON)

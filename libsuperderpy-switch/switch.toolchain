@@ -1,0 +1,7 @@
+include(/opt/devkitpro/switch.cmake)
+
+set(SWITCH ON)
+add_definitions("-Derrno_t=int")
+
+set(LIBSUPERDERPY_EXTRA_LIBS "-lSDL2 -lfreetype -lbz2 -lpng -ljpeg -ltheora -lvorbisfile -lvorbis -lopusfile -lopus -lFLAC -logg -lz -lEGL -lGLESv2 -lglapi -ldrm_nouveau -lnx -lstdc++ -lm")
+
