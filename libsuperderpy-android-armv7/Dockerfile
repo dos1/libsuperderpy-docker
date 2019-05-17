@@ -7,7 +7,7 @@ RUN $ANDROID_NDK_HOME/build/tools/make_standalone_toolchain.py --arch arm --api 
 ADD android.toolchain $ANDROID_TOOLCHAIN/
 ADD do_autotools do_cmake do_make /usr/bin/
 
-ENV PATH=${PATH}:${ANDROID_TOOLCHAIN}/bin AR=arm-linux-androideabi-ar AS=arm-linux-androideabi-clang CC=arm-linux-androideabi-clang CXX=arm-linux-androideabi-clang++ LD=arm-linux-androideabi-ld STRIP=arm-linux-androideabi-strip RANLIB=arm-linux-androideabi-ranlib ANDROID_CFLAGS="-fPIE -fPIC -mthumb -mfpu=neon -march=armv7-a" ANDROID_CXXFLAGS="-fPIE -fPIC -mthumb -mfpu=neon -march=armv7-a" ANDROID_LDFLAGS="-Wl,--fix-cortex-a8" PKG_CONFIG_PATH=$ANDROID_TOOLCHAIN/sysroot/usr/lib/pkgconfig
+ENV PATH=${PATH}:${ANDROID_TOOLCHAIN}/bin AR=arm-linux-androideabi-ar AS=arm-linux-androideabi-clang CC=arm-linux-androideabi-clang CXX=arm-linux-androideabi-clang++ LD=arm-linux-androideabi-ld STRIP=arm-linux-androideabi-strip RANLIB=arm-linux-androideabi-ranlib ANDROID_CFLAGS="-fPIE -fPIC -mthumb -mfloat-abi=softfp -march=armv7-a" ANDROID_CXXFLAGS="-fPIE -fPIC -mthumb -mfloat-abi=softfp -march=armv7-a" ANDROID_LDFLAGS="-Wl,--fix-cortex-a8" PKG_CONFIG_PATH=$ANDROID_TOOLCHAIN/sysroot/usr/lib/pkgconfig
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/zlib-1.2.11.tar.gz && tar xzf zlib-1.2.11.tar.gz && cd zlib-1.2.11 && do_cmake && rm -rf /deps
 
