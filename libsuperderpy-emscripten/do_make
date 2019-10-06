@@ -1,2 +1,2 @@
 #!/bin/sh
-emmake make install PREFIX=/emsdk_portable/sdk/system CC=emcc AR=emar RANLIB=emranlib $@
+emmake make install PREFIX=$EMSCRIPTEN/system/local CC=emcc AR=emar RANLIB=emranlib $@
