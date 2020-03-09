@@ -1,0 +1,27 @@
+From 3eccf068517056903b2857204b8c370ca20ffc00 Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <dos@dosowisko.net>
+Date: Thu, 16 May 2019 19:10:37 +0200
+Subject: [PATCH 9/9] cmake: don't link with dl on SDL platform
+
+It's unnecessary (Allegro doesn't use it directly) and breaks the build
+on platforms with no dynamic linking.
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7fd004974..b8954f33b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -967,7 +967,7 @@ endforeach(genfile)
+ 
+ if(ALLEGRO_SDL)
+     list(APPEND LIBRARY_SOURCES ${ALLEGRO_SRC_SDL_FILES})
+-    list(APPEND PLATFORM_LIBS ${SDL2_LIBRARY} dl m)
++    list(APPEND PLATFORM_LIBS ${SDL2_LIBRARY} m)
+     include_directories(${SDL2_INCLUDE_DIR})
+ endif(ALLEGRO_SDL)
+ 
+-- 
+2.22.0
+

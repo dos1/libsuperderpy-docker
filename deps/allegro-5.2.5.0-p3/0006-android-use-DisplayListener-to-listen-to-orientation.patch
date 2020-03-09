@@ -1,0 +1,100 @@
+From 0a0a312becbb49aed43754e1d9a4059453516b33 Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <dos@dosowisko.net>
+Date: Sun, 5 May 2019 03:20:19 +0200
+Subject: [PATCH 6/9] android: use DisplayListener to listen to orientation
+ changes
+
+Fixes #1048
+---
+ .../org/liballeg/android/AllegroActivity.java | 33 ++++++++++++++++---
+ 1 file changed, 29 insertions(+), 4 deletions(-)
+
+diff --git a/android/gradle_project/allegro/src/main/java/org/liballeg/android/AllegroActivity.java b/android/gradle_project/allegro/src/main/java/org/liballeg/android/AllegroActivity.java
+index a0b555ea6..3728f7b8c 100644
+--- a/android/gradle_project/allegro/src/main/java/org/liballeg/android/AllegroActivity.java
++++ b/android/gradle_project/allegro/src/main/java/org/liballeg/android/AllegroActivity.java
+@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
+ import android.content.pm.PackageManager;
+ import android.content.res.AssetManager;
+ import android.content.res.Configuration;
++import android.hardware.display.DisplayManager;
+ import android.os.Bundle;
+ import android.os.Environment;
+ import android.os.Handler;
+@@ -36,6 +37,7 @@ public class AllegroActivity extends Activity
+    private boolean joystickReconfigureNotified = false;
+    private Vector<Integer> joysticks;
+    private Clipboard clipboard;
++   private DisplayManager.DisplayListener displayListener;
+ 
+    public final static int JS_A = 0;
+    public final static int JS_B = 1;
+@@ -278,6 +280,10 @@ public class AllegroActivity extends Activity
+       t.start();
+    }
+ 
++   public void updateOrientation() {
++      nativeOnOrientationChange(getAllegroOrientation(), false);
++   }
++
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+@@ -328,8 +334,6 @@ public class AllegroActivity extends Activity
+          return;
+       }
+ 
+-      nativeOnOrientationChange(getAllegroOrientation(), true);
+-
+       requestWindowFeature(Window.FEATURE_NO_TITLE);
+       this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+@@ -340,7 +344,25 @@ public class AllegroActivity extends Activity
+    public void onStart()
+    {
+       super.onStart();
+-      Log.d("AllegroActivity", "onStart.");
++      Log.d("AllegroActivity", "onStart");
++
++      final AllegroActivity activity = this;
++      displayListener = new DisplayManager.DisplayListener() {
++         @Override
++         public void onDisplayAdded(int displayId) {}
++         @Override
++         public void onDisplayRemoved(int displayId) {}
++         @Override
++         public void onDisplayChanged(int displayId) {
++            activity.updateOrientation();
++         }
++      };
++      DisplayManager displayManager = (DisplayManager) getApplicationContext().getSystemService(getApplicationContext().DISPLAY_SERVICE);
++      displayManager.registerDisplayListener(displayListener, handler);
++
++      nativeOnOrientationChange(getAllegroOrientation(), true);
++
++      Log.d("AllegroActivity", "onStart end");
+    }
+ 
+    @Override
+@@ -356,6 +378,9 @@ public class AllegroActivity extends Activity
+       super.onStop();
+       Log.d("AllegroActivity", "onStop.");
+ 
++      DisplayManager displayManager = (DisplayManager) getApplicationContext().getSystemService(getApplicationContext().DISPLAY_SERVICE);
++      displayManager.unregisterDisplayListener(displayListener);
++
+       // TODO: Should we destroy the surface here?
+       // onStop is paired with onRestart and onCreate with onDestroy -
+       // if we destroy the surface here we need to handle onRestart to
+@@ -437,7 +462,7 @@ public class AllegroActivity extends Activity
+ 
+       if ((changes & ActivityInfo.CONFIG_ORIENTATION) != 0) {
+          Log.d("AllegroActivity", "orientation changed");
+-         nativeOnOrientationChange(getAllegroOrientation(), false);
++         updateOrientation();
+       }
+ 
+       if ((changes & ActivityInfo.CONFIG_SCREEN_LAYOUT) != 0)
+-- 
+2.22.0
+

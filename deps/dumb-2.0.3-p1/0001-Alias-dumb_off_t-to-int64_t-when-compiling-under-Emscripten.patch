@@ -1,0 +1,23 @@
+From ceb1f19afffc8a17eb132a5ee2f8ff58dd5803b1 Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <dos@dosowisko.net>
+Date: Thu, 6 Sep 2018 02:01:19 +0200
+Subject: [PATCH] Alias dumb_off_t to int64_t when compiling under Emscripten
+
+---
+ include/dumb.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/dumb.h b/include/dumb.h
+index f093e68..16eba94 100644
+--- a/include/dumb.h
++++ b/include/dumb.h
+@@ -114,6 +114,9 @@ typedef off64_t dumb_off_t;
+  */
+ #include <sys/types.h>
+ typedef off64_t dumb_off_t;
++#elif defined __EMSCRIPTEN__
++#include <sys/types.h>
++typedef int64_t dumb_off_t;
+ #elif _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 500
+ #include <sys/types.h>
+ typedef off_t dumb_off_t;

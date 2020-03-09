@@ -1,0 +1,26 @@
+From ca68eb98d9205963ceaa2fa50891a3307884519c Mon Sep 17 00:00:00 2001
+From: Kevin Wellwood <kwellwood@gmail.com>
+Date: Sun, 31 Mar 2019 19:21:04 -0700
+Subject: [PATCH 4/9] Fix typo in creation of the bitmap depth buffer.
+
+Patch from #947
+---
+ src/opengl/ogl_fbo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/opengl/ogl_fbo.c b/src/opengl/ogl_fbo.c
+index 6185a3ed8..c6dda63b8 100644
+--- a/src/opengl/ogl_fbo.c
++++ b/src/opengl/ogl_fbo.c
+@@ -206,7 +206,7 @@ static void attach_depth_buffer(ALLEGRO_FBO_INFO *info)
+ 
+       info->buffers.depth_buffer = rb;
+       info->buffers.dw = w;
+-      info->buffers.dw = h;
++      info->buffers.dh = h;
+       info->buffers.depth = bits;
+       GLint e = glGetError();
+       if (e) {
+-- 
+2.22.0
+

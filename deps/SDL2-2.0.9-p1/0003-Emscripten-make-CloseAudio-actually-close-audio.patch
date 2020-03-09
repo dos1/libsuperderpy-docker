@@ -1,0 +1,21 @@
+
+# HG changeset patch
+# User Sylvain Beucler <beuc@beuc.net>
+# Date 1542306150 0
+# Node ID 9bae6554dd3e6b00a7c7eefec0bc745908681a3a
+# Parent  8bb43ac2fb84e8bb442263690d35f377113ffa92
+Emscripten: make CloseAudio actually close audio
+cf. https://bugzilla.libsdl.org/show_bug.cgi?id=4176
+
+diff -r 8bb43ac2fb84 -r 9bae6554dd3e src/audio/emscripten/SDL_emscriptenaudio.c
+--- a/src/audio/emscripten/SDL_emscriptenaudio.c	Thu Nov 15 07:20:02 2018 +0300
++++ b/src/audio/emscripten/SDL_emscriptenaudio.c	Thu Nov 15 18:22:30 2018 +0000
+@@ -246,6 +246,7 @@
+     }
+     SDL_zerop(this->hidden);
+ #endif
++    this->hidden = (struct SDL_PrivateAudioData *)0x1;
+ 
+     /* limit to native freq */
+     this->spec.freq = EM_ASM_INT_V({ return SDL2.audioContext.sampleRate; });
+

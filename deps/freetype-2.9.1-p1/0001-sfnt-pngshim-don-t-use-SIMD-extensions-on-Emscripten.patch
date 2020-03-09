@@ -1,0 +1,24 @@
+From 2a13092583d85fb859e9243d1409f6bcabecdf9a Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <dos@dosowisko.net>
+Date: Thu, 3 Jan 2019 04:08:00 +0100
+Subject: [PATCH] sfnt: pngshim: don't use SIMD extensions on Emscripten
+
+---
+ src/sfnt/pngshim.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/sfnt/pngshim.c b/src/sfnt/pngshim.c
+index 1602026..3f9c660 100644
+--- a/src/sfnt/pngshim.c
++++ b/src/sfnt/pngshim.c
+@@ -68,6 +68,7 @@
+         ( ( __clang_major__ >= 4 )                               ||       \
+         ( ( __clang_major__ == 3 ) && ( __clang_minor__ >= 2 ) ) ) ) ) && \
+     defined( __OPTIMIZE__ )                                            && \
++    !defined(__EMSCRIPTEN__)                                           && \
+     __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 
+ #ifdef __clang__
+-- 
+2.20.1
+

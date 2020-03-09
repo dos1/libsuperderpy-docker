@@ -1,0 +1,120 @@
+From 48262b6bb6e30a33687c18c761f05633c7255dc9 Mon Sep 17 00:00:00 2001
+From: Pavel Sountsov <siege@google.com>
+Date: Sun, 12 May 2019 13:09:19 -0700
+Subject: [PATCH 7/7] Fix _al_kcm_refill_stream in cases where stream speed
+ caused spl->pos to overshoot.
+
+Previously, this would result in us copying some garbage to the
+beginning of the new buffer, since the logic was sourcing samples
+relative to the overshot spl->pos, rather than the real end of the
+buffer.
+
+While I was at it, I fixed a super-rare situation where the speed is so
+high that multiple buffers need to be updated. I only fixes it in the
+mixer code, not the voice code. The latter is essentially deprecated
+anyway, one should always use a mixer before a voice.
+
+Fix #1051.
+---
+ addons/audio/kcm_mixer.c  | 17 ++++++++---------
+ addons/audio/kcm_stream.c | 12 ++++++++----
+ addons/audio/kcm_voice.c  |  2 ++
+ 3 files changed, 18 insertions(+), 13 deletions(-)
+
+diff --git a/addons/audio/kcm_mixer.c b/addons/audio/kcm_mixer.c
+index c51d55c54..ee6d6a989 100644
+--- a/addons/audio/kcm_mixer.c
++++ b/addons/audio/kcm_mixer.c
+@@ -224,17 +224,16 @@ static bool fix_looped_position(ALLEGRO_SAMPLE_INSTANCE *spl)
+ 
+       case _ALLEGRO_PLAYMODE_STREAM_ONCE:
+       case _ALLEGRO_PLAYMODE_STREAM_ONEDIR:
+-         if (spl->pos < spl->spl_data.len) {
+-            return true;
+-         }
+          stream = (ALLEGRO_AUDIO_STREAM *)spl;
+-         is_empty = !_al_kcm_refill_stream(stream);
+-         if (is_empty && stream->is_draining) {
+-            stream->spl.is_playing = false;
+-         }
+-
+-         _al_kcm_emit_stream_events(stream);
++         is_empty = false;
++         while (spl->pos >= spl->spl_data.len && stream->spl.is_playing && !is_empty) {
++            is_empty = !_al_kcm_refill_stream(stream);
++            if (is_empty && stream->is_draining) {
++               stream->spl.is_playing = false;
++            }
+ 
++            _al_kcm_emit_stream_events(stream);
++         }
+          return !(is_empty);
+    }
+ 
+diff --git a/addons/audio/kcm_stream.c b/addons/audio/kcm_stream.c
+index 9c8181fbb..2feecde10 100644
+--- a/addons/audio/kcm_stream.c
++++ b/addons/audio/kcm_stream.c
+@@ -44,7 +44,6 @@ static void maybe_unlock_mutex(ALLEGRO_MUTEX *mutex)
+    }
+ }
+ 
+-
+ /* Function: al_create_audio_stream
+  */
+ ALLEGRO_AUDIO_STREAM *al_create_audio_stream(size_t fragment_count,
+@@ -608,7 +607,10 @@ bool al_set_audio_stream_fragment(ALLEGRO_AUDIO_STREAM *stream, void *val)
+ 
+ /* _al_kcm_refill_stream:
+  *  Called by the mixer when the current buffer has been used up.  It should
+- *  point to the next pending buffer and reset the sample position.
++ *  point to the next pending buffer and adjust the sample position to reflect
++ *  the buffer being updated. It may be necessary to call this function multiple
++ *  times if the sample position is so far ahead that multiple buffers need to
++ *  be consumed.
+  *  Returns true if the next buffer is available and set up.
+  *  Otherwise returns false.
+  */
+@@ -618,6 +620,7 @@ bool _al_kcm_refill_stream(ALLEGRO_AUDIO_STREAM *stream)
+    void *old_buf = spl->spl_data.buffer.ptr;
+    void *new_buf;
+    size_t i;
++   int new_pos = spl->pos - spl->spl_data.len;
+ 
+    if (old_buf) {
+       /* Slide the buffers down one position and put the
+@@ -649,15 +652,16 @@ bool _al_kcm_refill_stream(ALLEGRO_AUDIO_STREAM *stream)
+       const int bytes_per_sample =
+          al_get_channel_count(spl->spl_data.chan_conf) *
+          al_get_audio_depth_size(spl->spl_data.depth);
++
+       memcpy(
+          (char *) new_buf - bytes_per_sample * MAX_LAG,
+-         (char *) old_buf + bytes_per_sample * (spl->pos-MAX_LAG),
++         (char *) old_buf + bytes_per_sample * (spl->pos-MAX_LAG-new_pos),
+          bytes_per_sample * MAX_LAG);
+ 
+       stream->consumed_fragments++;
+    }
+ 
+-   stream->spl.pos = 0;
++   stream->spl.pos = new_pos;
+ 
+    return true;
+ }
+diff --git a/addons/audio/kcm_voice.c b/addons/audio/kcm_voice.c
+index 8443d1e1d..76b0d6947 100644
+--- a/addons/audio/kcm_voice.c
++++ b/addons/audio/kcm_voice.c
+@@ -213,6 +213,8 @@ static void stream_read(void *source, void **vbuf, unsigned int *samples,
+       *samples = len;
+ 
+    if (pos >= len) {
++      /* XXX: Handle the case where we need to call _al_kcm_refill_stream
++       * multiple times due to ludicrous playback speed. */
+       _al_kcm_refill_stream(stream);
+       if (!stream->pending_bufs[0]) {
+          if (stream->is_draining) {
+-- 
+2.21.0
+

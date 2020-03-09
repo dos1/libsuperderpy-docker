@@ -1,0 +1,21 @@
+
+# HG changeset patch
+# User Ryan C. Gordon <icculus@icculus.org>
+# Date 1544885825 18000
+# Node ID 0ae268b6ddf0ac4e6ebb7f3e20bc2bee9bc58064
+# Parent  6e387413a916b63a1942439f9fd348b7f2dd8ae2
+emscripten: SDL_PrivateJoystickAdded() wants an instance id, not device index.
+
+diff -r 6e387413a916 -r 0ae268b6ddf0 src/joystick/emscripten/SDL_sysjoystick.c
+--- a/src/joystick/emscripten/SDL_sysjoystick.c	Sat Dec 15 14:50:12 2018 +0100
++++ b/src/joystick/emscripten/SDL_sysjoystick.c	Sat Dec 15 09:57:05 2018 -0500
+@@ -97,7 +97,7 @@
+ 
+     ++numjoysticks;
+ 
+-    SDL_PrivateJoystickAdded(numjoysticks - 1);
++    SDL_PrivateJoystickAdded(item->device_instance);
+ 
+ #ifdef DEBUG_JOYSTICK
+     SDL_Log("Number of joysticks is %d", numjoysticks);
+

@@ -1,0 +1,98 @@
+From 699baadc9acacedab7a0350f294c224c67779d5f Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <dos@dosowisko.net>
+Date: Sat, 4 May 2019 20:34:53 +0200
+Subject: [PATCH 5/9] android: use FLAG_KEEP_SCREEN_ON instead of a wakelock
+ for screensaver inhibition
+
+Wakelocks are deprecated for this purpose and don't work without aquiring proper permissions,
+while window flag works without them and integrates properly with app switching.
+---
+ .../org/liballeg/android/AllegroActivity.java |  3 +-
+ .../java/org/liballeg/android/ScreenLock.java | 30 +++++++++++--------
+ 2 files changed, 19 insertions(+), 14 deletions(-)
+
+diff --git a/android/gradle_project/allegro/src/main/java/org/liballeg/android/AllegroActivity.java b/android/gradle_project/allegro/src/main/java/org/liballeg/android/AllegroActivity.java
+index 04ef74608..a0b555ea6 100644
+--- a/android/gradle_project/allegro/src/main/java/org/liballeg/android/AllegroActivity.java
++++ b/android/gradle_project/allegro/src/main/java/org/liballeg/android/AllegroActivity.java
+@@ -331,8 +331,7 @@ public class AllegroActivity extends Activity
+       nativeOnOrientationChange(getAllegroOrientation(), true);
+ 
+       requestWindowFeature(Window.FEATURE_NO_TITLE);
+-      this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+-            WindowManager.LayoutParams.FLAG_FULLSCREEN);
++      this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+ 
+       Log.d("AllegroActivity", "onCreate end");
+    }
+diff --git a/android/gradle_project/allegro/src/main/java/org/liballeg/android/ScreenLock.java b/android/gradle_project/allegro/src/main/java/org/liballeg/android/ScreenLock.java
+index e77caa122..7957caa75 100644
+--- a/android/gradle_project/allegro/src/main/java/org/liballeg/android/ScreenLock.java
++++ b/android/gradle_project/allegro/src/main/java/org/liballeg/android/ScreenLock.java
+@@ -1,16 +1,15 @@
+ package org.liballeg.android;
+ 
+ import android.app.Activity;
+-import android.content.Context;
+-import android.os.PowerManager;
+ import android.util.Log;
++import android.view.Window;
++import android.view.WindowManager;
+ 
+ class ScreenLock
+ {
+    private static final String TAG = "ScreenLock";
+ 
+    private Activity activity;
+-   private PowerManager.WakeLock wake_lock = null;
+ 
+    ScreenLock(Activity activity)
+    {
+@@ -20,10 +19,10 @@ class ScreenLock
+    boolean inhibitScreenLock(boolean inhibit)
+    {
+       try {
+-         if (inhibit && wake_lock == null) {
++         if (inhibit) {
+             acquire();
+          }
+-         else if (!inhibit && wake_lock != null) {
++         else if (!inhibit) {
+             release();
+          }
+          return true;
+@@ -36,17 +35,24 @@ class ScreenLock
+ 
+    private void acquire()
+    {
+-      PowerManager pm = (PowerManager)
+-         activity.getSystemService(Context.POWER_SERVICE);
+-      wake_lock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
+-         "Allegro Wake Lock");
+-      wake_lock.acquire();
++      activity.runOnUiThread(new Runnable() {
++         @Override
++         public void run()
++         {
++            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
++         }
++      });
+    }
+ 
+    private void release()
+    {
+-      wake_lock.release();
+-      wake_lock = null;
++      activity.runOnUiThread(new Runnable() {
++         @Override
++         public void run()
++         {
++            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
++         }
++      });
+    }
+ }
+ 
+-- 
+2.22.0
+

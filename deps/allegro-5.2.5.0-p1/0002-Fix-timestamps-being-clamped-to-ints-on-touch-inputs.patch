@@ -1,0 +1,91 @@
+From 23fd17d969f0b20b376701e93d66ad538d4f59e2 Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <dos@dosowisko.net>
+Date: Tue, 26 Feb 2019 04:32:40 +0100
+Subject: [PATCH 2/3] Fix timestamps being clamped to ints on touch inputs with
+ X11
+
+and also SDL in one case (cancel events) due to copy'n'paste...
+---
+ src/sdl/sdl_touch.c |  2 +-
+ src/x/xtouch.c      | 17 +++++------------
+ 2 files changed, 6 insertions(+), 13 deletions(-)
+
+diff --git a/src/sdl/sdl_touch.c b/src/sdl/sdl_touch.c
+index 5313f6b65..e5912c76f 100644
+--- a/src/sdl/sdl_touch.c
++++ b/src/sdl/sdl_touch.c
+@@ -209,7 +209,7 @@ static void sdl_get_touch_input_state(ALLEGRO_TOUCH_INPUT_STATE *ret_state)
+    _al_event_source_unlock(&touch_input->touch_input.es);
+ }
+ 
+-static void touch_input_handle_cancel(int index, size_t timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
++static void touch_input_handle_cancel(int index, double timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
+ {
+    ALLEGRO_TOUCH_STATE* state = touch_input->state.touches + index;
+    (void)primary;
+diff --git a/src/x/xtouch.c b/src/x/xtouch.c
+index 693895002..bd858cac2 100644
+--- a/src/x/xtouch.c
++++ b/src/x/xtouch.c
+@@ -172,7 +172,7 @@ static int find_touch_state_index_with_id(int id)
+ }
+ 
+ 
+-static void touch_input_handle_begin(int id, size_t timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
++static void touch_input_handle_begin(int id, double timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
+ {
+    int index= find_free_touch_state_index();
+    if (index < 0)
+@@ -202,7 +202,7 @@ static void touch_input_handle_begin(int id, size_t timestamp, float x, float y,
+ }
+ 
+ 
+-static void touch_input_handle_end(int id, size_t timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
++static void touch_input_handle_end(int id, double timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
+ {
+    int index= find_touch_state_index_with_id(id);
+    if (index < 0)
+@@ -232,7 +232,7 @@ static void touch_input_handle_end(int id, size_t timestamp, float x, float y, b
+ }
+ 
+ 
+-static void touch_input_handle_move(int id, size_t timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
++static void touch_input_handle_move(int id, double timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
+ {
+    int index= find_touch_state_index_with_id(id);
+    if (index < 0)
+@@ -260,7 +260,7 @@ static void touch_input_handle_move(int id, size_t timestamp, float x, float y,
+ }
+ 
+ 
+-static void touch_input_handle_cancel(int id, size_t timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
++static void touch_input_handle_cancel(int id, double timestamp, float x, float y, bool primary, ALLEGRO_DISPLAY *disp)
+ {
+    int index= find_touch_state_index_with_id(id);
+    if (index < 0)
+@@ -339,13 +339,6 @@ STOP_SEARCH_DEVICE:
+ }
+ 
+ 
+-static void touch_input_set_time_stamp(size_t timestamp)
+-{
+-   if (initiali_time_stamp != (size_t)~0)
+-      initiali_time_stamp = timestamp;
+-}
+-
+-
+ static bool xtouch_init(void)
+ {
+    if (installed)
+@@ -365,7 +358,7 @@ static bool xtouch_init(void)
+    _al_event_source_init(&touch_input.mouse_emulation_es);
+    touch_input.mouse_emulation_mode = ALLEGRO_MOUSE_EMULATION_TRANSPARENT;
+ 
+-   touch_input_set_time_stamp(al_get_time());
++   initiali_time_stamp = al_get_time();
+ 
+    installed = true;
+ 
+-- 
+2.21.0
+
