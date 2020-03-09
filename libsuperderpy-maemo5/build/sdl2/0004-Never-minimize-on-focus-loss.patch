@@ -1,18 +1,18 @@
-From c4ae4c3b2308311e7497827320bfafc3456aa4d5 Mon Sep 17 00:00:00 2001
+From 251789ef9785ab5b58c66f635258b11230352f37 Mon Sep 17 00:00:00 2001
 From: Sebastian Krzyszkowiak <dos@dosowisko.net>
 Date: Thu, 1 Nov 2018 18:54:00 +0100
 Subject: [PATCH 4/5] Never minimize on focus loss
 
 Maemo's window manager doesn't handle that very well.
 ---
- src/video/SDL_video.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+ src/video/SDL_video.c | 23 +----------------------
+ 1 file changed, 1 insertion(+), 22 deletions(-)
 
 diff --git a/src/video/SDL_video.c b/src/video/SDL_video.c
-index 4b43449cf..0d8bbc933 100644
+index c0ca4cba0..961a56dc1 100644
 --- a/src/video/SDL_video.c
 +++ b/src/video/SDL_video.c
-@@ -2636,19 +2636,7 @@ SDL_OnWindowFocusGained(SDL_Window * window)
+@@ -2652,28 +2652,7 @@ SDL_OnWindowFocusGained(SDL_Window * window)
  static SDL_bool
  ShouldMinimizeOnFocusLoss(SDL_Window * window)
  {
@@ -28,11 +28,20 @@ index 4b43449cf..0d8bbc933 100644
 -    }
 -#endif
 -
+-#ifdef __ANDROID__
+-    {
+-        extern SDL_bool Android_JNI_ShouldMinimizeOnFocusLoss(void);
+-        if (! Android_JNI_ShouldMinimizeOnFocusLoss()) {
+-            return SDL_FALSE;
+-        }
+-    }
+-#endif
+-
 -    return SDL_GetHintBoolean(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, SDL_TRUE);
 +    return SDL_FALSE;
  }
  
  void
 -- 
-2.20.1
+2.25.1
 

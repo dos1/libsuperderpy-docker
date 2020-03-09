@@ -40,10 +40,16 @@ RUN mkdir /opt/osxcross &&                                      \
     UNATTENDED=1 PORTABLE=1 ./build.sh &&                       \
     ./build_compiler_rt.sh
 
+RUN mkdir -p /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/include && \
+mkdir -p /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/lib/darwin && \
+cp -rv /opt/osxcross/build/compiler-rt/include/sanitizer /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/include && \
+cp -v /opt/osxcross/build/compiler-rt/build/lib/darwin/*.a /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/lib/darwin && \
+cp -v /opt/osxcross/build/compiler-rt/build/lib/darwin/*.dylib /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/lib/darwin
+
 ENV PATH $PATH:/opt/osxcross/target/bin
 CMD /bin/bash
 
-ENV MACOSX_DEPLOYMENT_TARGET 10.7
+ENV MACOSX_DEPLOYMENT_TARGET 10.8
 ENV LIBSUPERDERPY_OSXCROSS_ROOT /opt/osxcross/target
 ENV LIBSUPERDERPY_OSXCROSS_SDK_VERSION 10.11
 

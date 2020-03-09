@@ -1,4 +1,4 @@
-From a1dfaf1e6fd20545e1a3bae784bdaaf742a88a65 Mon Sep 17 00:00:00 2001
+From 2a87e05ff612bfdb0226548b6c63511535db190b Mon Sep 17 00:00:00 2001
 From: Sebastian Krzyszkowiak <dos@dosowisko.net>
 Date: Thu, 30 Aug 2018 03:09:51 +0200
 Subject: [PATCH 2/5] Don't include GLES1 headers when GLES2 is active
@@ -9,7 +9,7 @@ GLES1 and GLES2 can't be included at the same time in Maemo
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/video/SDL_video.c b/src/video/SDL_video.c
-index 336fdaa50..4b43449cf 100644
+index c63f74631..c0ca4cba0 100644
 --- a/src/video/SDL_video.c
 +++ b/src/video/SDL_video.c
 @@ -37,7 +37,7 @@
@@ -22,5 +22,5 @@ index 336fdaa50..4b43449cf 100644
  #endif /* SDL_VIDEO_OPENGL_ES */
  
 -- 
-2.20.1
+2.25.1
 

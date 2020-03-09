@@ -1,60 +1,40 @@
-From 3d50e25543e5638c5ba8adaaec0395a882047a7b Mon Sep 17 00:00:00 2001
+From b974bf9b09916eef5320eee0f08863808d0c5600 Mon Sep 17 00:00:00 2001
 From: Sebastian Krzyszkowiak <dos@dosowisko.net>
-Date: Thu, 10 Jan 2019 05:26:53 +0100
-Subject: [PATCH] Don't force the file extension to .js or .wasm when compiling
- side modules
+Date: Sun, 1 Mar 2020 23:14:36 +0100
+Subject: [PATCH] test2
 
-Specifying -s SIDE_MODULE=1 (or =2) is already enough to determine the file
-type. Emscripten's preload plugins already expect WASM side modules to have
-.so extension, so this fixes a peculiar situation where Emscripten can't
-produce a file in a way Emscripten itself expects it to be later.
 ---
- emcc.py | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ emcc.py | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/emcc.py b/emcc.py
-index d28b168c8..e76eb9ec4 100755
+index 826645ab4..bbde50e63 100755
 --- a/emcc.py
 +++ b/emcc.py
-@@ -910,7 +910,7 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
-     executable_endings = JS_CONTAINING_ENDINGS + ('.wasm',)
-     compile_only = has_dash_c or has_dash_S
- 
--    link_to_object = final_suffix not in executable_endings
-+    link_to_object = final_suffix not in executable_endings and 'SIDE_MODULE=1' not in settings_changes and 'SIDE_MODULE=2' not in settings_changes
- 
-     def add_link_flag(i, f):
-       # Filter out libraries that musl includes in libc itself, or which we
-@@ -1089,7 +1089,7 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
-       # If not compiling to JS, then we are compiling to an intermediate bitcode
-       # objects or library, so ignore dynamic linking, since multiple dynamic
-       # linkings can interfere with each other
--      if get_file_suffix(target) not in JS_CONTAINING_ENDINGS or options.ignore_dynamic_linking:
-+      if (get_file_suffix(target) not in JS_CONTAINING_ENDINGS and 'SIDE_MODULE=1' not in settings_changes and 'SIDE_MODULE=2' not in settings_changes) or options.ignore_dynamic_linking:
-         def check(input_file):
-           if get_file_suffix(input_file) in DYNAMICLIB_ENDINGS:
-             if not options.ignore_dynamic_linking:
-@@ -1158,6 +1158,11 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
-     elif shared.Settings.SIDE_MODULE:
+@@ -1230,6 +1230,9 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
        assert not shared.Settings.MAIN_MODULE
-       options.memory_init_file = False # memory init file is not supported with asm.js side modules, must be executable synchronously (for dlopen)
+       # memory init file is not supported with asm.js side modules, must be executable synchronously (for dlopen)
+       options.memory_init_file = False
 +      # SIDE_MODULE+WASM combo unambiguously specifies what kind of file we want to output, so we don't have to fiddle with file extension
 +      if shared.Settings.WASM:
 +        wasm_binary_target = target
-+      else:
-+        js_target = target
  
      if shared.Settings.MAIN_MODULE or shared.Settings.SIDE_MODULE:
        assert shared.Settings.ASM_JS, 'module linking requires asm.js output (-s ASM_JS=1)'
-@@ -2041,8 +2046,6 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
+@@ -2176,12 +2179,10 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
+ 
+     linker_inputs = [val for _, val in sorted(temp_files + link_flags)]
+ 
+-    if link_to_object:
++    if link_to_object and not shared.Settings.SIDE_MODULE:
        with ToolchainProfiler.profile_block('linking to object file'):
          # We have a specified target (-o <target>), which is not JavaScript or HTML, and
          # we have multiple files: Link them
 -        if shared.Settings.SIDE_MODULE:
 -          exit_with_error('SIDE_MODULE must only be used when compiling to an executable shared library, and not when emitting an object file.  That is, you should be emitting a .wasm file (for wasm) or a .js file (for asm.js). Note that when compiling to a typical native suffix for a shared library (.so, .dylib, .dll; which many build systems do) then Emscripten emits an object file, which you should then compile to .wasm or .js with SIDE_MODULE.')
          if final_suffix.lower() in ('.so', '.dylib', '.dll'):
-           logger.warning('When Emscripten compiles to a typical native suffix for shared libraries (.so, .dylib, .dll) then it emits an object file. You should then compile that to an emscripten SIDE_MODULE (using that flag) with suffix .wasm (for wasm) or .js (for asm.js). (You may also want to adapt your build system to emit the more standard suffix for a an object file, \'.bc\' or \'.o\', which would avoid this warning.)')
+           shared.warning('When Emscripten compiles to a typical native suffix for shared libraries (.so, .dylib, .dll) then it emits an object file. You should then compile that to an emscripten SIDE_MODULE (using that flag) with suffix .wasm (for wasm) or .js (for asm.js). (You may also want to adapt your build system to emit the more standard suffix for a an object file, \'.bc\' or \'.o\', which would avoid this warning.)')
          logger.debug('link_to_object: ' + str(linker_inputs) + ' -> ' + specified_target)
 -- 
-2.23.0
+2.25.1
 
