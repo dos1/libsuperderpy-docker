@@ -1,3 +1,8 @@
 #!/bin/sh
-export EMCC_CFLAGS="-O3"
+export EMCC_CFLAGS="-O3 --llvm-lto 3"
+export EMCC_CXXFLAGS="-O3 --llvm-lto 3 -fno-exceptions -fno-rtti"
+export EMCC_LDFLAGS="-O3 --llvm-lto 3"
+export CFLAGS="$EMCC_CFLAGS"
+export CXXFLAGS="$EMCC_CXXFLAGS"
+export LDFLAGS="$EMCC_LDFLAGS"
 emconfigure ./configure --prefix=$EMSCRIPTEN/system/local $@ && emmake make -j3 install

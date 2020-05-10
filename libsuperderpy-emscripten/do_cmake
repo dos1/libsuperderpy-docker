@@ -1,2 +1,2 @@
 #!/bin/sh
-mkdir -p build && cd build && emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja -DCMAKE_SYSROOT=$EMSCRIPTEN/system/local -DCMAKE_INSTALL_PREFIX=$EMSCRIPTEN/system/local -DCMAKE_PREFIX_PATH=$EMSCRIPTEN/system/local $@ && ninja install
+mkdir -p build && cd build && CFLAGS="-O3 --llvm-lto 3" CXXFLAGS="-O3 --llvm-lto 3 -fno-exceptions -fno-rtti" LDFLAGS="-O3 --llvm-lto 3" emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -GNinja -DCMAKE_SYSROOT=$EMSCRIPTEN/system/local -DCMAKE_INSTALL_PREFIX=$EMSCRIPTEN/system/local -DCMAKE_PREFIX_PATH=$EMSCRIPTEN/system/local $@ && ninja install
