@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
 RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build pkg-config cmake zip git wget python2.7 vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp && ln -s /usr/bin/python2.7 /usr/bin/python2

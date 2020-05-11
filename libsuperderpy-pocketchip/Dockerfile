@@ -47,7 +47,7 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/SDL
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.6.0-p1.tar.gz && tar xzf allegro-5.2.6.0-p1.tar.gz && cd allegro-5.2.6.0 && do_cmake -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF -DALLEGRO_SDL=ON && rm -rf /deps
 
-FROM debian:stretch
+FROM debian:buster
 RUN apt-get update && apt-get install -y wget git pkg-config ninja-build cmake zip file vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp xz-utils
 RUN mkdir /toolchain && cd /toolchain && wget https://releases.linaro.org/components/toolchain/binaries/4.9-2016.02/arm-linux-gnueabihf/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabihf.tar.xz && tar xf gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabihf.tar.xz && rm gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabihf.tar.xz
 ADD pocketchip.toolchain /toolchain

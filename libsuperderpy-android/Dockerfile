@@ -1,4 +1,5 @@
 FROM debian:stretch
+# buster has openjdk 11, which breaks sdkmanager...
 
 ENV ANDROID_HOME /opt/android-sdk-linux
 
