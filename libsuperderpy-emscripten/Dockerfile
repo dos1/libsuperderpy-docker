@@ -32,12 +32,12 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/lib
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/physfs-3.0.2.tar.bz2 && tar xBf physfs-3.0.2.tar.bz2 && cd physfs-3.0.2 && do_cmake -DPHYSFS_BUILD_SHARED=OFF && rm -rf /deps
 
-RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.10.1-p1.tar.gz && tar xzf freetype-2.10.1-p1.tar.gz && cd freetype-2.10.1 && do_cmake -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=ON -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=ON -DCMAKE_DISABLE_FIND_PACKAGE_PNG=ON -DCMAKE_DISABLE_FIND_PACKAGE_BZip2=ON && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.10.2.tar.gz && tar xzf freetype-2.10.2.tar.gz && cd freetype-2.10.2 && do_cmake -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=ON -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=ON -DCMAKE_DISABLE_FIND_PACKAGE_PNG=ON -DCMAKE_DISABLE_FIND_PACKAGE_BZip2=ON && rm -rf /deps
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/harfbuzz-2.6.4.tar.xz && tar xf harfbuzz-2.6.4.tar.xz && cd harfbuzz-2.6.4 && do_cmake -DHB_HAVE_FREETYPE=ON -DHB_BUILD_TESTS=OFF && rm -rf /deps
 
 # and freetype again, now with harfbuzz support
-RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.10.1-p1.tar.gz && tar xzf freetype-2.10.1-p1.tar.gz && cd freetype-2.10.1 && do_cmake -DFT_WITH_ZLIB=ON -DFT_WITH_BZIP2=ON -DFT_WITH_PNG=ON -DFT_WITH_HARFBUZZ=ON && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.10.2.tar.gz && tar xzf freetype-2.10.2.tar.gz && cd freetype-2.10.2 && do_cmake -DFT_WITH_ZLIB=ON -DFT_WITH_BZIP2=ON -DFT_WITH_PNG=ON -DFT_WITH_HARFBUZZ=ON && rm -rf /deps
 
 # audio doesn't work on upstream SDL2; let's use the one from emscripten-ports for now
 # TODO: try upstream SDL2 2.0.10? isolate patches?

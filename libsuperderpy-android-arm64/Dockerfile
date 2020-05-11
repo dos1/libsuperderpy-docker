@@ -35,13 +35,13 @@ RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/lib
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/physfs-3.0.2.tar.bz2 && tar xBf physfs-3.0.2.tar.bz2 && cd physfs-3.0.2 && do_cmake -DPHYSFS_BUILD_SHARED=off && rm -rf /deps
 
-RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.10.1-p1.tar.gz && tar xzf freetype-2.10.1-p1.tar.gz && cd freetype-2.10.1 && do_cmake -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=ON -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=ON -DCMAKE_DISABLE_FIND_PACKAGE_PNG=ON -DCMAKE_DISABLE_FIND_PACKAGE_BZip2=ON && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.10.2.tar.gz && tar xzf freetype-2.10.2.tar.gz && cd freetype-2.10.2 && do_cmake -DCMAKE_DISABLE_FIND_PACKAGE_ZLIB=ON -DCMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=ON -DCMAKE_DISABLE_FIND_PACKAGE_PNG=ON -DCMAKE_DISABLE_FIND_PACKAGE_BZip2=ON && rm -rf /deps
 
 # harfbuzz 2.6.x FTBFS (at least up to 2.6.4)
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/harfbuzz-2.5.3.tar.xz && tar xf harfbuzz-2.5.3.tar.xz && cd harfbuzz-2.5.3 && do_cmake -DHB_HAVE_FREETYPE=ON && rm -rf /deps
 
 # and freetype again, now with harfbuzz support
-RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.10.1-p1.tar.gz && tar xzf freetype-2.10.1-p1.tar.gz && cd freetype-2.10.1 && do_cmake -DFT_WITH_ZLIB=ON -DFT_WITH_BZIP2=ON -DFT_WITH_PNG=ON -DFT_WITH_HARFBUZZ=ON && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/freetype-2.10.2.tar.gz && tar xzf freetype-2.10.2.tar.gz && cd freetype-2.10.2 && do_cmake -DFT_WITH_ZLIB=ON -DFT_WITH_BZIP2=ON -DFT_WITH_PNG=ON -DFT_WITH_HARFBUZZ=ON && rm -rf /deps
 
 RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.6.0-p1.tar.gz && tar xzf allegro-5.2.6.0-p1.tar.gz && cd allegro-5.2.6.0 && do_cmake -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF -DFREETYPE_ZLIB=ON -DFREETYPE_PNG=ON -DFREETYPE_HARFBUZZ=ON -DFREETYPE_BZIP2=ON -DPREFER_STATIC_DEPS=ON -DTTF_COMPILES_WITH_EXTRA_DEPS=ON && mkdir -p /opt/allegro5/lib && cp -r /deps/allegro-5.2.6.0/build/lib/*.aar /opt/allegro5/lib/ && rm -rf /deps
 
