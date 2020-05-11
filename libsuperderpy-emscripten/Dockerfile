@@ -1,4 +1,4 @@
-FROM trzeci/emscripten:1.39.8-fastcomp
+FROM trzeci/emscripten:1.39.10-fastcomp
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
 RUN apt-get update && apt-get -y full-upgrade && apt-get install -y ninja-build file pkg-config git zip vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp autoconf libtool
