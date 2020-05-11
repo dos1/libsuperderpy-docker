@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 MAINTAINER Sebastian Krzyszkowiak <dos@dosowisko.net>
 
 # Install build tools
@@ -7,15 +7,18 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yy \
         automake            \
         bison               \
+        build-essential     \
         cmake               \
         curl                \
         file                \
         flex                \
         git                 \
         libtool             \
+        llvm-dev            \
         pkg-config          \
         python              \
         texinfo             \
+        uuid-dev            \
         vim                 \
         wget                \
         ninja-build         \
@@ -40,11 +43,11 @@ RUN mkdir /opt/osxcross &&                                      \
     UNATTENDED=1 PORTABLE=1 ./build.sh &&                       \
     ./build_compiler_rt.sh
 
-RUN mkdir -p /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/include && \
-mkdir -p /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/lib/darwin && \
-cp -rv /opt/osxcross/build/compiler-rt/include/sanitizer /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/include && \
-cp -v /opt/osxcross/build/compiler-rt/build/lib/darwin/*.a /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/lib/darwin && \
-cp -v /opt/osxcross/build/compiler-rt/build/lib/darwin/*.dylib /usr/lib/llvm-3.8/bin/../lib/clang/3.8.1/lib/darwin
+RUN mkdir -p /usr/lib/llvm-7/lib/clang/7.0.1/include && \
+mkdir -p /usr/lib/llvm-7/lib/clang/7.0.1/lib/darwin && \
+cp -rv /opt/osxcross/build/compiler-rt/compiler-rt/include/sanitizer /usr/lib/llvm-7/lib/clang/7.0.1/include && \
+cp -v /opt/osxcross/build/compiler-rt/compiler-rt/build/lib/darwin/*.a /usr/lib/llvm-7/lib/clang/7.0.1/lib/darwin && \
+cp -v /opt/osxcross/build/compiler-rt/compiler-rt/build/lib/darwin/*.dylib /usr/lib/llvm-7/lib/clang/7.0.1/lib/darwin
 
 ENV PATH $PATH:/opt/osxcross/target/bin
 CMD /bin/bash
