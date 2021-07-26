@@ -1,0 +1,3 @@
+include($ENV{VITASDK}/share/vita.toolchain.cmake)
+
+set(LIBSUPERDERPY_EXTRA_LIBS_INIT "-lSDL2 -lpib -llibScePiglet_stub -lSceShaccCg_stub -ltaihen_stub -lSceAppMgr_stub -lSceGxm_stub -lSceDisplay_stub -lSceCtrl_stub -lSceAudio_stub -lSceSysmodule_stub -lSceDisplay_stub -lSceCtrl_stub -lSceIofilemgr_stub -lSceCommonDialog_stub -lSceTouch_stub -lSceHid_stub -lSceMotion_stub -lScePower_stub -lSceAudio_stub -lSceAudioIn_stub -lm -ldumb -lwebp -ljpeg -ltheora -lfreetype -lpng -lz -logg -lvorbis -lopenal -lopus -lFLAC -lopusfile -lvorbisfile -lpthread -lstdc++")
