@@ -1,17 +1,17 @@
-From 7ef37ae9115fe55380515b53a2fe0edd9791c895 Mon Sep 17 00:00:00 2001
+From a68bf8b426a0b327162c075f8ec9fa6ce8c50b42 Mon Sep 17 00:00:00 2001
 From: Sebastian Krzyszkowiak <dos@dosowisko.net>
 Date: Tue, 30 Oct 2018 09:13:33 +0100
-Subject: [PATCH 3/5] Workaround an issue with keyboard focus on Maemo
+Subject: [PATCH 3/6] Workaround an issue with keyboard focus on Maemo
 
 ---
  src/video/x11/SDL_x11events.c | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/src/video/x11/SDL_x11events.c b/src/video/x11/SDL_x11events.c
-index cd46effb7..f0d23ac05 100644
+index ea729274..651768a0 100644
 --- a/src/video/x11/SDL_x11events.c
 +++ b/src/video/x11/SDL_x11events.c
-@@ -1112,6 +1112,7 @@ X11_DispatchEvent(_THIS)
+@@ -1147,6 +1147,7 @@ X11_DispatchEvent(_THIS)
                  printf("window %p: WM_TAKE_FOCUS\n", data);
  #endif
                  SDL_SendWindowEvent(data->window, SDL_WINDOWEVENT_TAKE_FOCUS, 0, 0);
@@ -20,5 +20,5 @@ index cd46effb7..f0d23ac05 100644
              }
          }
 -- 
-2.25.1
+2.32.0
 

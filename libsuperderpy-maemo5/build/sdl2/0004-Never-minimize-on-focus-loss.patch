@@ -1,7 +1,7 @@
-From 251789ef9785ab5b58c66f635258b11230352f37 Mon Sep 17 00:00:00 2001
+From 134cce68b36ca6f358b296673accfa01df7f3d42 Mon Sep 17 00:00:00 2001
 From: Sebastian Krzyszkowiak <dos@dosowisko.net>
 Date: Thu, 1 Nov 2018 18:54:00 +0100
-Subject: [PATCH 4/5] Never minimize on focus loss
+Subject: [PATCH 4/6] Never minimize on focus loss
 
 Maemo's window manager doesn't handle that very well.
 ---
@@ -9,10 +9,10 @@ Maemo's window manager doesn't handle that very well.
  1 file changed, 1 insertion(+), 22 deletions(-)
 
 diff --git a/src/video/SDL_video.c b/src/video/SDL_video.c
-index c0ca4cba0..961a56dc1 100644
+index c54d28f2..4be95fa2 100644
 --- a/src/video/SDL_video.c
 +++ b/src/video/SDL_video.c
-@@ -2652,28 +2652,7 @@ SDL_OnWindowFocusGained(SDL_Window * window)
+@@ -2768,28 +2768,7 @@ SDL_OnWindowFocusGained(SDL_Window * window)
  static SDL_bool
  ShouldMinimizeOnFocusLoss(SDL_Window * window)
  {
@@ -37,11 +37,11 @@ index c0ca4cba0..961a56dc1 100644
 -    }
 -#endif
 -
--    return SDL_GetHintBoolean(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, SDL_TRUE);
+-    return SDL_GetHintBoolean(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, SDL_FALSE);
 +    return SDL_FALSE;
  }
  
  void
 -- 
-2.25.1
+2.32.0
 

@@ -1,15 +1,17 @@
-FROM debian:stretch
-# buster has openjdk 11, which breaks sdkmanager...
+FROM debian:buster
 
 ENV ANDROID_HOME /opt/android-sdk-linux
 
 # ------------------------------------------------------
 # --- Install required tools
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk-headless cmake zip ninja-build zip wget python pkg-config git vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp && apt-get clean
+RUN echo "deb http://deb.debian.org/debian stretch main" > /etc/apt/sources.list.d/stretch.list # for openjdk-8-jdk-headless
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk-headless openjdk-11-jdk-headless cmake zip ninja-build zip wget python pkg-config git vorbis-tools opus-tools graphicsmagick-imagemagick-compat webp libncurses5 && apt-get clean
 
 # ------------------------------------------------------
 # --- Download Android SDK tools into $ANDROID_HOME
+
+RUN update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
 
 RUN cd /opt \
     && wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip -O android-sdk-tools.zip \
@@ -18,10 +20,10 @@ RUN cd /opt \
 
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
 
-ENV LIBSUPERDERPY_ANDROID_TARGET android-26
+ENV LIBSUPERDERPY_ANDROID_TARGET android-30
 ENV ANDROID_NDK_HOME /opt/android-ndk
 ENV ANDROID_NDK_VERSION r14b
-ENV ANDROID_BUILD_TOOLS_VERSION 28.0.2
+ENV ANDROID_BUILD_TOOLS_VERSION 30.0.1
 ENV ANDROID_BUILD_TOOLS ${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS_VERSION}
 
 # ------------------------------------------------------
@@ -68,4 +70,4 @@ RUN mkdir /opt/android-ndk-tmp && \
 ENV PATH ${PATH}:${ANDROID_NDK_HOME}
 
 # warm up the gradle cache
-RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.6.0-p1.tar.gz && tar xzf allegro-5.2.6.0-p1.tar.gz && cd allegro-5.2.6.0 && cmake -Bbuild -H. -DCMAKE_BUILD_TYPE=Release -GNinja -DANDROID_NDK=$ANDROID_NDK_HOME -DCMAKE_SYSTEM_NAME=Android -DANDROID=TRUE -DWANT_TESTS=no -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF && cmake --build build && rm -rf /deps
+RUN mkdir /deps && cd /deps && wget https://dosowisko.net/libsuperderpy/deps/allegro-5.2.7.0-p1.tar.gz && tar xzf allegro-5.2.7.0-p1.tar.gz && cd allegro-5.2.7.0 && cmake -Bbuild -H. -DCMAKE_BUILD_TYPE=Release -GNinja -DANDROID_NDK=$ANDROID_NDK_HOME -DCMAKE_SYSTEM_NAME=Android -DANDROID=TRUE -DWANT_TESTS=no -DWANT_EXAMPLES=OFF -DWANT_DEMO=OFF && cmake --build build && rm -rf /deps

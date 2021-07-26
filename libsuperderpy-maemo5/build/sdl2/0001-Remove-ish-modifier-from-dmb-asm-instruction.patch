@@ -1,14 +1,14 @@
-From eae96cc94878f5fe2e55aa2df2630c7c3b15618c Mon Sep 17 00:00:00 2001
+From 2fa3f480b16fabdf09f4cb15c426adec49132d53 Mon Sep 17 00:00:00 2001
 From: Sebastian Krzyszkowiak <dos@dosowisko.net>
 Date: Thu, 30 Aug 2018 02:59:10 +0200
-Subject: [PATCH 1/5] Remove ish modifier from dmb asm instruction
+Subject: [PATCH 1/6] Remove ish modifier from dmb asm instruction
 
 ---
  include/SDL_atomic.h | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/include/SDL_atomic.h b/include/SDL_atomic.h
-index deee35f91..97ec961ca 100644
+index e99f1bcc..8705b98f 100644
 --- a/include/SDL_atomic.h
 +++ b/include/SDL_atomic.h
 @@ -159,8 +159,8 @@ extern DECLSPEC void SDLCALL SDL_MemoryBarrierAcquireFunction(void);
@@ -34,5 +34,5 @@ index deee35f91..97ec961ca 100644
  #ifdef __thumb__
  /* The mcr instruction isn't available in thumb mode, use real functions */
 -- 
-2.25.1
+2.32.0
 

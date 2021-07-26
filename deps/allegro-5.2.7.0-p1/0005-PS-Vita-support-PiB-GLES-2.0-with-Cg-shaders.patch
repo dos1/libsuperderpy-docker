@@ -1,0 +1,187 @@
+From c69f7c62884d91383a38e2e07b29b152d35e04bf Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <dos@dosowisko.net>
+Date: Thu, 22 Jul 2021 20:04:01 +0200
+Subject: [PATCH 5/5] PS Vita support (PiB - GLES 2.0 with Cg shaders)
+
+---
+ CMakeLists.txt        |  2 +-
+ src/debug.c           |  2 ++
+ src/fshook_stdio.c    | 21 +++++++++++++++++++++
+ src/shader.c          |  7 +++++++
+ src/shader_source.inc | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 73 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7dcab2bc7..3c9bab195 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -620,7 +620,7 @@ if(WANT_OPENGL)
+         if(IPHONE)
+             set(OPENGLES2_FOUND 1)
+             set(OPENGLES2_LIBRARIES "-framework OpenGLES")
+-        elseif(EMSCRIPTEN)
++        elseif(EMSCRIPTEN OR VITA)
+             set(OPENGLES2_FOUND 1)
+         else()
+             find_package(OpenGLES2)
+diff --git a/src/debug.c b/src/debug.c
+index b5dadfc75..a60ea9af3 100644
+--- a/src/debug.c
++++ b/src/debug.c
+@@ -180,6 +180,8 @@ static void open_trace_file(void)
+          /* iPhone and Android don't like us writing files, so we'll be doing
+           * something else there by default. */
+          trace_info.trace_file = NULL;
++#elif defined(__vita__)
++         trace_info.trace_file = fopen("ux0:data/allegro.log", "w");
+ #else
+          trace_info.trace_file = fopen("allegro.log", "w");
+ #endif
+diff --git a/src/fshook_stdio.c b/src/fshook_stdio.c
+index 588dd4ead..1d5e95a9a 100644
+--- a/src/fshook_stdio.c
++++ b/src/fshook_stdio.c
+@@ -127,6 +127,15 @@ ALLEGRO_DEBUG_CHANNEL("fshook")
+    #define WRAP_READDIR(d)          (readdir(d))
+ #endif
+ 
++#ifdef __vita__
++  #include <psp2/io/stat.h>
++  #undef  WRAP_MKDIR
++  #undef  WRAP_RMDIR
++  #define WRAP_MKDIR(p)             (sceIoMkdir(p, 0755))
++  #define WRAP_RMDIR(p)             (sceIoRmdir(p))
++  #define VITA_FAKE_CWD             "ur0:"
++#endif
++
+ #ifndef PATH_MAX
+ #define PATH_MAX 4096
+ #endif
+@@ -183,11 +192,15 @@ static WRAP_CHAR *make_absolute_path_inner(const WRAP_CHAR *tail)
+    ALLEGRO_PATH *tailpath = NULL;
+    char *ret = NULL;
+ 
++#ifndef __vita__
+    if (!getcwd(cwd, sizeof(cwd))) {
+       ALLEGRO_WARN("Unable to get current working directory.\n");
+       al_set_errno(errno);
+       goto Error;
+    }
++#else
++   strcpy(cwd, VITA_FAKE_CWD);
++#endif
+ 
+    cwdpath = al_create_path_for_directory(cwd);
+    if (!cwdpath) {
+@@ -539,10 +552,14 @@ static char *fs_stdio_get_current_directory(void)
+    char tmpdir[PATH_MAX];
+    char *cwd;
+ 
++#ifndef __vita__
+    if (!getcwd(tmpdir, PATH_MAX)) {
+       al_set_errno(errno);
+       return NULL;
+    }
++#else
++   strcpy(tmpdir, VITA_FAKE_CWD);
++#endif
+ 
+    cwd = al_malloc(strlen(tmpdir) + 1);
+    if (!cwd) {
+@@ -565,7 +582,11 @@ static bool fs_stdio_change_directory(const char *path)
+       al_free(wpath);
+    }
+ #else
++#ifndef __vita__
+    ret = chdir(path);
++#else
++   ret = 0;
++#endif
+ #endif
+ 
+    if (ret == -1) {
+diff --git a/src/shader.c b/src/shader.c
+index be47fbf41..c019a3ca0 100644
+--- a/src/shader.c
++++ b/src/shader.c
+@@ -386,10 +386,17 @@ char const *al_get_default_shader_source(ALLEGRO_SHADER_PLATFORM platform,
+       case ALLEGRO_SHADER_GLSL:
+ #ifdef ALLEGRO_CFG_SHADER_GLSL
+          switch (type) {
++#ifdef __vita__
++            case ALLEGRO_VERTEX_SHADER:
++               return default_cg_vertex_source;
++            case ALLEGRO_PIXEL_SHADER:
++               return default_cg_pixel_source;
++#else
+             case ALLEGRO_VERTEX_SHADER:
+                return default_glsl_vertex_source;
+             case ALLEGRO_PIXEL_SHADER:
+                return default_glsl_pixel_source;
++#endif
+          }
+ #endif
+          break;
+diff --git a/src/shader_source.inc b/src/shader_source.inc
+index 04694b346..480e7c9d8 100644
+--- a/src/shader_source.inc
++++ b/src/shader_source.inc
+@@ -37,6 +37,30 @@ static const char *default_glsl_vertex_source =
+    "  gl_Position = " ALLEGRO_SHADER_VAR_PROJVIEW_MATRIX " * " ALLEGRO_SHADER_VAR_POS ";\n"
+    "}\n";
+ 
++#ifdef __vita__
++static const char *default_cg_vertex_source =
++   "void main(\n"
++   "  float4 " ALLEGRO_SHADER_VAR_POS " : POSITION,\n"
++   "  float4 " ALLEGRO_SHADER_VAR_COLOR " : COLOR,\n"
++   "  float2 " ALLEGRO_SHADER_VAR_TEXCOORD " : TEXCOORD0,\n"
++   "  uniform float4x4 " ALLEGRO_SHADER_VAR_PROJVIEW_MATRIX ",\n"
++   "  uniform bool " ALLEGRO_SHADER_VAR_USE_TEX_MATRIX ",\n"
++   "  uniform float4x4 " ALLEGRO_SHADER_VAR_TEX_MATRIX ",\n"
++   "  float4 out varying_color : COLOR,\n"
++   "  float2 out varying_texcoord : TEXCOORD0,\n"
++   "  float4 out gl_Position : POSITION)\n"
++   "{\n"
++   "  varying_color = " ALLEGRO_SHADER_VAR_COLOR ";\n"
++   "  if (" ALLEGRO_SHADER_VAR_USE_TEX_MATRIX ") {\n"
++   "    float4 uv = mul(float4(" ALLEGRO_SHADER_VAR_TEXCOORD ", 0, 1), " ALLEGRO_SHADER_VAR_TEX_MATRIX ");\n"
++   "    varying_texcoord = float2(uv.x, uv.y);\n"
++   "  }\n"
++   "  else\n"
++   "    varying_texcoord = " ALLEGRO_SHADER_VAR_TEXCOORD";\n"
++   "  gl_Position = mul(" ALLEGRO_SHADER_VAR_POS ", " ALLEGRO_SHADER_VAR_PROJVIEW_MATRIX ");\n"
++   "}\n";
++#endif
++
+ static const char *default_glsl_pixel_source =
+    "#ifdef GL_ES\n"
+    "precision lowp float;\n"
+@@ -57,6 +81,24 @@ static const char *default_glsl_pixel_source =
+    "    gl_FragColor = varying_color;\n"
+    "}\n";
+ 
++#ifdef __vita__
++static const char *default_cg_pixel_source =
++   "float4 main(\n"
++   "  uniform sampler2D " ALLEGRO_SHADER_VAR_TEX ",\n"
++   "  uniform bool " ALLEGRO_SHADER_VAR_USE_TEX ",\n"
++   "  uniform bool " ALLEGRO_SHADER_VAR_ALPHA_TEST ",\n"
++   "  uniform int " ALLEGRO_SHADER_VAR_ALPHA_FUNCTION ",\n"
++   "  uniform float " ALLEGRO_SHADER_VAR_ALPHA_TEST_VALUE ",\n"
++   "  float4 varying_color : COLOR,\n"
++   "  float2 varying_texcoord : TEXCOORD0)\n"
++   "{\n"
++   "  if (" ALLEGRO_SHADER_VAR_USE_TEX ")\n"
++   "    return varying_color * tex2D(" ALLEGRO_SHADER_VAR_TEX ", varying_texcoord);\n"
++   "  else\n"
++   "    return varying_color;\n"
++   "}\n";
++#endif
++
+ #endif /* ALLEGRO_CFG_SHADER_GLSL */
+ 
+ 
+-- 
+2.32.0
+

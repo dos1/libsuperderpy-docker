@@ -1,0 +1,35 @@
+From 2ca86263b67085c1e6370fbc482efeb2febd2c21 Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <dos@dosowisko.net>
+Date: Fri, 23 Jul 2021 19:48:22 +0200
+Subject: [PATCH 3/5] SDL: touch: Ignore touch events from indirect touch
+ devices
+
+There's no equivalent API in Allegro for them yet.
+---
+ src/sdl/sdl_touch.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/src/sdl/sdl_touch.c b/src/sdl/sdl_touch.c
+index 6afde2cac..074cb3f34 100644
+--- a/src/sdl/sdl_touch.c
++++ b/src/sdl/sdl_touch.c
+@@ -140,10 +140,12 @@ void _al_sdl_touch_input_event(SDL_Event *e)
+ 
+    int touchId = e->tfinger.fingerId;
+ 
+-   // SDL2 only returns absolute positions of touches on the input device. This means we have to fake them
+-   // in order to make them related to the display, which is what Allegro returns in its API.
+-   // This is likely to break in lots of cases, but should work well with non-rotated fullscreen or Wayland windows.
+-   // NOTE: SDL 2.0.10 is going to have SDL_GetTouchDeviceType API which may be somewhat helpful here.
++   // SDL2 touch events also handle indirect touch devices that aren't directly related to the display.
++   // Allegro doesn't really have an equivalent in its API, so filter them out.
++#if SDL_VERSION_ATLEAST(2,0,10)
++   if (SDL_GetTouchDeviceType(e->tfinger.touchId) != SDL_TOUCH_DEVICE_DIRECT)
++      return;
++#endif
+ 
+    touch_input->state.touches[touchId].x = e->tfinger.x * al_get_display_width(d);
+    touch_input->state.touches[touchId].y = e->tfinger.y * al_get_display_height(d);
+-- 
+2.32.0
+

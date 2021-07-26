@@ -1,0 +1,25 @@
+From 506fb2b84fa0ab2eb0578e6dd16a604f453c3b5e Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <dos@dosowisko.net>
+Date: Mon, 26 Jul 2021 05:56:14 +0200
+Subject: [PATCH 6/6] cpuinfo: Don't fail on missing readProcAuxvForNeon symbol
+
+---
+ src/cpuinfo/SDL_cpuinfo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/cpuinfo/SDL_cpuinfo.c b/src/cpuinfo/SDL_cpuinfo.c
+index b529a6d1..6bc2d350 100644
+--- a/src/cpuinfo/SDL_cpuinfo.c
++++ b/src/cpuinfo/SDL_cpuinfo.c
+@@ -478,7 +478,7 @@ CPU_haveNEON(void)
+ #elif (defined(__LINUX__) || defined(__ANDROID__)) && defined(HAVE_GETAUXVAL)
+     return ((getauxval(AT_HWCAP) & HWCAP_NEON) == HWCAP_NEON);
+ #elif defined(__LINUX__)
+-    return readProcAuxvForNeon();
++    return 1; // N900 has NEON
+ #elif defined(__ANDROID__)
+     /* Use NDK cpufeatures to read either /proc/self/auxv or /proc/cpuinfo */
+     {
+-- 
+2.32.0
+
