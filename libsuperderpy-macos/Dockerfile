@@ -37,18 +37,12 @@ RUN mkdir /opt/osxcross &&                                      \
     cd /opt &&                                                  \
     git clone https://github.com/tpoechtrager/osxcross.git &&   \
     cd osxcross &&                                              \
-    git checkout 1b731164dfd56de2ff20b530ec70c7a88a7b6ea6 &&    \
+    git checkout de6c72eff2d6013f5af46fba1fa205654c5cf5e2 &&    \
     ./tools/get_dependencies.sh &&                              \
     curl -L -o ./tarballs/MacOSX${OSXCROSS_SDK_VERSION}.sdk.tar.xz \
         https://s3.amazonaws.com/andrew-osx-sdks/MacOSX${OSXCROSS_SDK_VERSION}.sdk.tar.xz && \
     UNATTENDED=1 PORTABLE=1 ./build.sh &&                       \
     ./build_compiler_rt.sh
-
-RUN mkdir -p /usr/lib/llvm-7/lib/clang/7.0.1/include && \
-mkdir -p /usr/lib/llvm-7/lib/clang/7.0.1/lib/darwin && \
-cp -rv /opt/osxcross/build/compiler-rt/compiler-rt/include/sanitizer /usr/lib/llvm-7/lib/clang/7.0.1/include && \
-cp -v /opt/osxcross/build/compiler-rt/compiler-rt/build/lib/darwin/*.a /usr/lib/llvm-7/lib/clang/7.0.1/lib/darwin && \
-cp -v /opt/osxcross/build/compiler-rt/compiler-rt/build/lib/darwin/*.dylib /usr/lib/llvm-7/lib/clang/7.0.1/lib/darwin
 
 ENV PATH $PATH:/opt/osxcross/target/bin
 CMD /bin/bash
